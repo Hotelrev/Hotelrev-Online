@@ -2,6 +2,9 @@
 
 Stay Booker Pro is a  hotel booking website built with modern web technologies. It is designed to be a fully functional and responsive web application for hotel booking services.
 
+![Screenshot 2024-03-04 143954](https://github.com/Mannu292001/StayBooker-Pro/assets/107943260/1c070118-f6b7-420c-bf48-263facf01463)
+![Screenshot 2024-03-04 144026](https://github.com/Mannu292001/StayBooker-Pro/assets/107943260/db697c85-efd0-4fae-a443-dcd5738a4931)
+
 ## Key Features
 
 - **Modern Tech Stack**: Built using React, Tailwind CSS, MirageJS for mocking APIs.
