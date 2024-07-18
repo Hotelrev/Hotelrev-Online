@@ -5,23 +5,33 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaEnvelope } from 'react-icons/fa'
 const LaunchingSoon = () => {
   const [email, setEmail] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  const [showMessage2, setShowMessage2] = useState(false)
 
   const handleNotifyMeClick = () => {
     // Simulate email submission
-    setShowMessage(true);
-    setTimeout(() => {
-      setShowMessage(false);
-    }, 2000);
+    if (email === '') {
+      setShowMessage2(true)
+      setTimeout(() => {
+        setShowMessage2(false)
+      }, 2000);
+    } else {
+      setShowMessage(true);
+      setEmail('')
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 2000);
+    }
   };
 
   return (
-    <div className="flex lg:flex-row flex-col items-center justify-center min-h-screen bg-gray-100 lg:py-12">
+    <div className="flex lg:flex-row flex-col items-center justify-center min-h-screen bg-gray-100 lg:py-12 py-5">
       <img src={comingsoon} alt="Travel and Hotels" className="lg:w-[500px] w-[80%] lg:mr-[-120px]" />
       <div className="max-w-md w-full text-center bg-white shadow rounded-lg p-8 z-10 lg:mt-[1px] mt-[-125px]">
         <h1 className="text-4xl font-bold text-[#074498] mb-4">Launching Soon</h1>
         <p className="text-gray-700 mb-6">Stay tuned for the best hotel booking experience!</p>
         <div className="mb-6">
           {showMessage && <p className="text-green-500 mb-4">Email received! Thank you!</p>}
+          {showMessage2 && <p className="text-red-500 mb-4">Please enter your email address!</p>}
         </div>
         <div className="w-full">
           <input 
@@ -30,6 +40,7 @@ const LaunchingSoon = () => {
             className="w-full p-2 border border-gray-300 rounded-lg mb-4 outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <button 
             className="w-full bg-[#074498] text-white py-2 rounded-lg hover:bg-blue-700"

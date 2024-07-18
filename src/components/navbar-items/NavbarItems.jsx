@@ -51,7 +51,7 @@ const NavbarItems = ({ isAuthenticated }) => {
       </li>
       <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
         <Link
-          to="/hotels"
+          // to="/hotels"
           className={`uppercase font-medium text-slate-100 hover-underline-animation ${
             isActive('/hotels') && 'active-link'
           }`}

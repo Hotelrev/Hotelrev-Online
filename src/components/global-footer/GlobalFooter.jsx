@@ -41,9 +41,8 @@ const GlobalFooter = () => {
           </div>
         </div>
         <div className="text-center mt-10">
-          <p>Designed and styled by Manvendra</p>
           <p>
-            &copy; {new Date().getFullYear()}.All rights reserved.
+            Copyright &copy; {new Date().getFullYear()} Hotelrev Online All Rights Reserved.
           </p>
         </div>
       </div>

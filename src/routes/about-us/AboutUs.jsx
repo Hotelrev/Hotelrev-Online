@@ -1,4 +1,43 @@
+import aboutUs from '../../assests/logos/about-us.gif'
+import { useState } from 'react';
+
 const AboutUs = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggleAccordion = index => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const faqData = [
+    {
+      question: "What is Hotelrev?",
+      answer: "Hotelrev is a premier online travel agency dedicated to revolutionizing the hotel booking experience across Africa."
+    },
+    {
+      question: "How can I book a hotel through Hotelrev?",
+      answer: "You can easily book a hotel through our user-friendly platform by searching for your destination, selecting your preferred hotel, and completing the booking process online."
+    },
+    {
+      question: "What types of hotels are available on Hotelrev?",
+      answer: "We offer a diverse selection of hotels across Africa, from luxury resorts to budget-friendly options, catering to all types of travelers."
+    },
+    {
+      question: "Do you offer any discounts?",
+      answer: "Yes, we provide exclusive discounts and deals that you won’t find anywhere else, helping you save on your travels."
+    },
+    {
+      question: "How does Hotelrev support local hotels?",
+      answer: "We promote hotels with limited social media presence, giving them the visibility they deserve and supporting local businesses and communities."
+    },
+    {
+      question: "Can I plan my entire trip through Hotelrev?",
+      answer: "Yes, through our strategic partnerships, we offer integrated trip planning and vacation scheduling services, providing you with a comprehensive travel solution."
+    },
+    {
+      question: "What if I need help with my booking?",
+      answer: "Our dedicated customer support team is always ready to assist you with any inquiries or issues, ensuring a smooth and enjoyable booking experience."
+    }
+  ];
   return (
     <>
       <div className="mt-10 lg:px-[50px] px-5 lg:flex lg:flex-row">
@@ -25,15 +64,12 @@ const AboutUs = () => {
           </p>
         </div>
         <div className="lg:w-1/2 lg:pl-10 lg:flex lg:items-center">
-          <img src="about-us-image.jpg" alt="About Us" className="w-full h-auto " />
+          <img src={aboutUs} alt="About Us" className="w-full h-auto " />
         </div>
       </div>
       <br />
-      <div className="mt-10 lg:px-[50px] px-5 lg:flex lg:flex-row">
-        <div className="lg:w-1/2 lg:pr-10 lg:flex lg:items-center">
-          <img src="vision-image.jpg" alt="Our Vision" className="w-full h-auto hidden lg:block" />
-        </div>
-        <div className="lg:w-1/2 lg:pl-10">
+      <div className="mt-10 lg:px-[50px] px-5 ">
+        <div className="">
           <h2 className="lg:text-3xl text-xl font-extrabold text-brand">Our Vision</h2>
           <p>
             Our vision at Hotelrev is to become the leading online travel agency 
@@ -59,33 +95,36 @@ const AboutUs = () => {
         </div>
       </div>
       <br />
-      <div className="mt-10 lg:px-[50px] px-5 lg:flex lg:flex-row">
-        <div className="lg:w-1/2 lg:pr-10">
+      <div className="mt-10 lg:px-[50px] px-5 ">
+        <div className="">
           <h2 className="lg:text-3xl text-xl font-extrabold text-brand">Why Choose Us?</h2>
-          <p>
-            <strong>Seamless Booking:</strong> Our user-friendly platform ensures quick and easy hotel bookings for all types of travelers.
+          <p className='text-lg'>
+            Choosing Hotelrev means partnering with a travel agency committed to providing the 
+            best hotel booking experience in Africa. Here's why:
           </p>
-          <p>
-            <strong>Extensive Listings:</strong> We offer a diverse selection of hotels across Africa, from luxury resorts to budget-friendly options.
-          </p>
-          <p>
-            <strong>Exclusive Discounts:</strong> Enjoy unbeatable deals and discounts, helping you save on your travels without compromising quality.
-          </p>
-          <p>
-            <strong>Support for Local Gems:</strong> We promote hotels with limited social media presence, giving visibility to hidden gems and supporting local businesses.
-          </p>
-          <p>
-            <strong>Comprehensive Solutions:</strong> Our partnerships allow us to offer integrated trip planning and vacation scheduling, making us a one-stop solution for all your travel needs.
-          </p>
-          <p>
-            <strong>Customer Satisfaction:</strong> Our dedicated support team ensures a smooth and enjoyable booking experience from start to finish.
-          </p>
-          <p>
-            <strong>Advanced Technology:</strong> We use the latest technology for secure payments and real-time availability updates, providing reliable and efficient service.
-          </p>
-        </div>
-        <div className="lg:w-1/2 lg:pl-10 lg:flex lg:items-center">
-          <img src="why-choose-us-image.jpg" alt="Why Choose Us" className="w-full h-auto hidden lg:block" />
+          <ul className="ml-7 list-disc">
+            <li>
+              <strong>Seamless Booking:</strong> Our user-friendly platform ensures quick and easy hotel bookings for all types of travelers.
+            </li>
+            <li>
+              <strong>Extensive Listings:</strong> We offer a diverse selection of hotels across Africa, from luxury resorts to budget-friendly options.
+            </li>
+            <li>
+              <strong>Exclusive Discounts:</strong> Enjoy unbeatable deals and discounts, helping you save on your travels without compromising quality.
+            </li>
+            <li>
+              <strong>Support for Local Gems:</strong> We promote hotels with limited social media presence, giving visibility to hidden gems and supporting local businesses.
+            </li>
+            <li>
+              <strong>Comprehensive Solutions:</strong> Our partnerships allow us to offer integrated trip planning and vacation scheduling, making us a one-stop solution for all your travel needs.
+            </li>
+            <li>
+              <strong>Customer Satisfaction:</strong> Our dedicated support team ensures a smooth and enjoyable booking experience from start to finish.
+            </li>
+            <li>
+              <strong>Advanced Technology:</strong> We use the latest technology for secure payments and real-time availability updates, providing reliable and efficient service.
+            </li>
+          </ul>
         </div>
       </div>
       <br />
@@ -104,6 +143,28 @@ const AboutUs = () => {
           go-to platform for all your hotel booking needs.
         </p>
         <br />
+      </div>
+
+      <div className="mt-10 lg:px-[50px] px-5">
+        <h2 className="lg:text-3xl text-xl font-extrabold text-brand">FAQ</h2>
+        <div className="space-y-5">
+          {faqData.map((faq, index) => (
+            <div key={index} className="border-b border-gray-300">
+              <button 
+                className="w-full text-left py-4 focus:outline-none flex justify-between items-center" 
+                onClick={() => toggleAccordion(index)}
+              >
+                <span className="text-lg font-medium">{faq.question}</span>
+                <span>{activeIndex === index ? '-' : '+'}</span>
+              </button>
+              <div 
+                className={`overflow-hidden transition-max-height duration-500 ease-in-out ${activeIndex === index ? 'max-h-screen' : 'max-h-0'}`}
+              >
+                <p className="py-2">{faq.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
