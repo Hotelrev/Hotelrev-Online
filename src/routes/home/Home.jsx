@@ -6,6 +6,7 @@ import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
 import ResultsContainer from 'components/results-container/ResultsContainer';
 import { formatDate } from 'utils/date-helpers';
 import { useNavigate } from 'react-router-dom';
+import LaunchingSoon from './components/LaunchingSoon';
 
 /**
  * Home component that renders the main page of the application.
@@ -133,7 +134,9 @@ const Home = () => {
         onDatePickerIconClick={onDatePickerIconClick}
         onSearchButtonAction={onSearchButtonAction}
       />
-      <div className="container mx-auto">
+
+      <LaunchingSoon/>
+      {/* <div className="container mx-auto">
         <PopularLocations popularDestinationsData={popularDestinationsData} />
         <div className="my-8">
           <h2 className="text-3xl font-medium text-slate-700 text-center my-2">
@@ -144,7 +147,7 @@ const Home = () => {
             enableFilters={false}
           />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

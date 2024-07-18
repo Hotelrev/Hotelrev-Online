@@ -20,7 +20,7 @@ const HeroCover = (props) => {
         <></>
         <div className="hero-content__text py-4">
           <h3 className="text-4xl font-medium">
-            Discover your perfect stay around the globe
+            Discover your perfect stay in Africa
           </h3>
           <p className="my-1">
             Enter your dates to see the latest prices and begin your journey of

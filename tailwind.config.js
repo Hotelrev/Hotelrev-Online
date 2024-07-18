@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors: {
         'brand': '#074498',
-        'brand-secondary': '#cbae37'
+        'brand-secondary': '#cbae37',
       },
       fontFamily: {
         sans: ['Jost', 'sans-serif'],

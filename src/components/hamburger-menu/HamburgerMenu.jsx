@@ -27,7 +27,7 @@ const HamburgerMenu = (props) => {
         <FontAwesomeIcon
           data-testid="menu-close__button"
           icon={faXmark}
-          size="2x"
+          // size="2x"
           color="#fff"
           onClick={onHamburgerMenuToggle}
         />

@@ -78,7 +78,7 @@ const HotelViewCard = (props) => {
           </p>
         </div>
         <button
-          className=" bg-brand-secondary px-4 py-2 text-white whitespace-nowrap"
+          className=" bg-brand-secondary hover:brand-secondary-hover px-4 py-2 text-white whitespace-nowrap"
           onClick={onBookNowClick}
         >
           Book now
