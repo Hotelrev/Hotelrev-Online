@@ -69,6 +69,18 @@ const NavbarItems = ({ isAuthenticated }) => {
           About us
         </Link>
       </li>
+
+      <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
+        <Link
+          to="/contact-us"
+          className={`uppercase font-medium text-slate-100 hover-underline-animation ${
+            isActive('/contact-us') && 'active-link'
+          }`}
+        >
+          Support
+        </Link>
+      </li>
+
       <li className={`${!isAuthenticated && 'p-4'}`}>
         {isAuthenticated ? (
           <DropdownButton triggerType="click" options={dropdownOptions} />

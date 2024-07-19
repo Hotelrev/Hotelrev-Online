@@ -23,16 +23,17 @@ const HamburgerMenu = (props) => {
         isVisible ? 'absolute right-0 w-1/2 top-0 h-screen' : 'hidden'
       }`}
     >
-      <div className="absolute right-5 top-2">
+      <div className="absolute right-5 top-2 ">
         <FontAwesomeIcon
           data-testid="menu-close__button"
           icon={faXmark}
           // size="2x"
+          className='text-[27px]'
           color="#fff"
           onClick={onHamburgerMenuToggle}
         />
       </div>
-      <ul className="list-none">
+      <ul className="list-none mt-[50px]">
         <NavbarItems isAuthenticated={isAuthenticated} />
       </ul>
     </div>

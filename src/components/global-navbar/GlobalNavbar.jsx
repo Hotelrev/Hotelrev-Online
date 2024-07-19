@@ -16,7 +16,7 @@ const GlobalNavbar = () => {
   };
 
   return (
-    <div className="relative flex flex-wrap justify-between items-center px-4 py-2 md:px-12 global-navbar__container bg-brand brand-divider-bottom">
+    <div className="relative flex flex-wrap justify-between items-center px-4 py-4 md:px-12 global-navbar__container bg-brand brand-divider-bottom">
       <div className="flex">
         <Link to="/">
           <img src={logo} alt="site logo" className="site-logo__img lg:w-[170px] w-[100px]" />
@@ -30,7 +30,7 @@ const GlobalNavbar = () => {
         icon={faBars}
         // size="2x"
         color="#fff"
-        className="block md:hidden"
+        className="block md:hidden text-[27px]"
         onClick={onHamburgerMenuToggle}
       />
       <HamburgerMenu
