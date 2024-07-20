@@ -44,7 +44,7 @@ const NavbarItems = ({ isAuthenticated }) => {
       <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
         <Link
           to="/"
-          className={`uppercase font-medium text-slate-100 hover-underline-animation`}
+          className={`uppercase font-medium text-sm text-slate-100 hover-underline-animation`}
         >
           Home
         </Link>
@@ -52,7 +52,7 @@ const NavbarItems = ({ isAuthenticated }) => {
       <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
         <Link
           // to="/hotels"
-          className={`uppercase font-medium text-slate-100 hover-underline-animation ${
+          className={`uppercase font-medium text-sm text-slate-100 hover-underline-animation ${
             isActive('/hotels') && 'active-link'
           }`}
         >
@@ -62,7 +62,7 @@ const NavbarItems = ({ isAuthenticated }) => {
       <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
         <Link
           to="/about-us"
-          className={`uppercase font-medium text-slate-100 hover-underline-animation ${
+          className={`uppercase font-medium text-sm text-slate-100 hover-underline-animation ${
             isActive('/about-us') && 'active-link'
           }`}
         >
@@ -73,7 +73,7 @@ const NavbarItems = ({ isAuthenticated }) => {
       <li className="p-4 hover:bg-blue-900 md:hover:bg-brand">
         <Link
           to="/contact-us"
-          className={`uppercase font-medium text-slate-100 hover-underline-animation ${
+          className={`uppercase font-medium text-sm text-slate-100 hover-underline-animation ${
             isActive('/contact-us') && 'active-link'
           }`}
         >
@@ -87,7 +87,7 @@ const NavbarItems = ({ isAuthenticated }) => {
         ) : (
           <Link
             to="/login"
-            className={`uppercase font-medium text-slate-100 hover-underline-animation ${
+            className={`uppercase font-medium text-sm text-slate-100 hover-underline-animation ${
               isActive('/login') && 'active-link'
             }`}
           >

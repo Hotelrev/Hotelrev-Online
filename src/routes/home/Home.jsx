@@ -135,8 +135,8 @@ const Home = () => {
         onSearchButtonAction={onSearchButtonAction}
       />
 
-      <LaunchingSoon/>
-      {/* <div className="container mx-auto">
+      {/* <LaunchingSoon/> */}
+      <div className="container mx-auto">
         <PopularLocations popularDestinationsData={popularDestinationsData} />
         <div className="my-8">
           <h2 className="text-3xl font-medium text-slate-700 text-center my-2">
@@ -147,7 +147,7 @@ const Home = () => {
             enableFilters={false}
           />
         </div>
-      </div> */}
+      </div>
     </>
   );
 };

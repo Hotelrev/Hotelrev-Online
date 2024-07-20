@@ -40,15 +40,18 @@ const GlobalFooter = () => {
             <FooterLink to="/" label="Malawi" />
           </div>
           <div className="mb-6 md:mb-0">
-            <h4 className="font-bold text-lg mb-2">Company Info</h4>
-            <FooterLink to="/about-us" label="About Us" />
-            <FooterLink to="/contact-us" label="Contact" />
-            <FooterLink to="/" label="Privacy Policy" />
+            <h4 className="font-bold text-lg mb-2">Partnership</h4>
+            <FooterLink to="/" label="Travel agencies" />
+            <FooterLink to="/" label="Affiliate Program" />
+            <FooterLink to="/" label="List your Hotel" />
+            <FooterLink to="/" label="List your shortlet" />
           </div>
           <div className="mb-6 md:mb-0">
             <h4 className="font-bold text-lg mb-2">Support</h4>
-            <FooterLink to="/" label="FAQs" />
+            <FooterLink to="/about-us" label="About Us" />
             <FooterLink to="/contact-us" label="Contact" />
+            <FooterLink to="/privacy-policy" label="Privacy Policy" />
+            <FooterLink to="/about-us" label="FAQs" />
           </div>
           <div className="mb-6 md:mb-0">
             <h4 className="font-bold text-lg mb-2">Newsletter</h4>

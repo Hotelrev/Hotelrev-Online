@@ -15,7 +15,8 @@ const HeroCover = (props) => {
     setisDatePickerVisible,
   } = props;
   return (
-    <div className="bg-brand min-h-[400px] md:min-h-72 lg:min-h-60 text-slate-100 relative">
+    <div 
+      className="bg-brand min-h-[100px] md:min-h-72 lg:min-h-60 text-slate-100 relative">
       <div className="hero-content__container flex flex-col items-center container mx-auto px-2 md:px-0">
         <></>
         <div className="hero-content__text py-4">
@@ -23,8 +24,7 @@ const HeroCover = (props) => {
             Discover your perfect stay in Africa
           </h3>
           <p className="my-1">
-            Enter your dates to see the latest prices and begin your journey of
-            relaxation and adventure today.
+            Choose from our 2,500,000 hotels world wide. Enter your dates to see the latest prices and book a stay!
           </p>
         </div>
         <GlobalSearchBox
