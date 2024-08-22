@@ -35,7 +35,7 @@ const PopularLocations = (props) => {
           ? Array.from({ length: 5 }, (_, index) => (
               <ImageCardSkeleton key={index} />
             ))
-          : popularDestinationsData.data.map((city) => (
+          : popularDestinationsData.data?.map((city) => (
               <ImageCard
                 key={city.code}
                 name={city.name}

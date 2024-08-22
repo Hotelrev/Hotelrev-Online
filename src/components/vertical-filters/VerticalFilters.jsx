@@ -36,12 +36,12 @@ const VerticalFilters = (props) => {
           Clear
         </button>
       </div>
-      {filtersData.map((filter) => (
+      {filtersData?.map((filter) => (
         <div className="border-b-2" key={filter.filterId}>
           <h4 className="text-base font-bold text-slate-600 my-1 px-2">
             {filter.title}
           </h4>
-          {filter.filters.map((subfilter) => (
+          {filter.filters?.map((subfilter) => (
             <Checkbox
               key={subfilter.id}
               id={subfilter.id}

@@ -38,7 +38,7 @@ const PaymentMethodsPanel = ({ paymentMethods, setPaymentMethods }) => {
         </div>
       ) : (
         <ul className="divide-y divide-gray-200">
-          {paymentMethods.map((method, index) => (
+          {paymentMethods?.map((method, index) => (
             <li
               key={index}
               className="px-4 py-4 flex items-center justify-between sm:px-6"

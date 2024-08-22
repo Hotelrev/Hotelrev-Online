@@ -61,7 +61,7 @@ const ResultsContainer = (props) => {
   return (
     <div className="relative">
       <div className="flex gap-x-0 md:gap-x-4 items-start mx-2">
-        {enableFilters && selectedFiltersState.length > 0 && (
+        {enableFilters && selectedFiltersState?.length > 0 && (
           <div ref={wrapperRef}>
             <VerticalFilters
               filtersData={selectedFiltersState}
@@ -71,7 +71,7 @@ const ResultsContainer = (props) => {
             />
           </div>
         )}
-        {enableFilters && filtersData.isLoading && <VerticalFiltersSkeleton />}
+        {enableFilters && filtersData?.isLoading && <VerticalFiltersSkeleton />}
         <div className="flex flex-col w-full items-start">
           <div className="flex w-full justify-between px-2 md:px-0">
             {enableFilters && (
@@ -97,12 +97,12 @@ const ResultsContainer = (props) => {
             )}
           </div>
           <div className="hotels-results__container mx-2 md:mx-0 flex flex-col gap-y-2 w-full">
-            {hotelsResults.isLoading ? (
+            {hotelsResults?.isLoading ? (
               Array.from({ length: 5 }, (_, index) => (
                 <HotelViewCardSkeleton key={index} />
               ))
-            ) : hotelsResults.data.length > 0 ? (
-              hotelsResults.data.map((hotel) => (
+            ) : hotelsResults?.data?.length > 0 ? (
+              hotelsResults?.data?.map((hotel) => (
                 <HotelViewCard
                   key={hotel.hotelCode}
                   id={hotel.hotelCode}

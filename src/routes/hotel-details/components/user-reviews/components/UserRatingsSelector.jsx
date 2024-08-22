@@ -32,7 +32,7 @@ const UserRatingsSelector = ({
     >
       <div className="text-lg font-semibold text-gray-700">Your Rating</div>
       <div className="flex">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {[1, 2, 3, 4, 5]?.map((star) => (
           <FontAwesomeIcon
             key={star}
             icon={star <= userRating ? fasStar : farStar}

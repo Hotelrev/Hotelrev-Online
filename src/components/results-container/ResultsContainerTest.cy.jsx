@@ -272,9 +272,9 @@ describe('ResultsContainer', () => {
     ],
   };
 
-  const selectedFiltersState = mockFiltersData.data.map((filterGroup) => ({
+  const selectedFiltersState = mockFiltersData.data?.map((filterGroup) => ({
     ...filterGroup,
-    filters: filterGroup.filters.map((filter) => ({
+    filters: filterGroup.filters?.map((filter) => ({
       ...filter,
       isSelected: false,
     })),

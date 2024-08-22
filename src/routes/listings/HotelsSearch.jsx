@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GlobalSearchBox from 'components/global-search-box/GlobalSearchbox';
 import ResultsContainer from 'components/results-container/ResultsContainer';
 import { networkAdapter } from 'services/NetworkAdapter';
+import { apiManager } from 'services/ApiManager';
 import isEmpty from 'utils/helpers';
 import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
 import { formatDate } from 'utils/date-helpers';
@@ -27,6 +28,10 @@ const HotelsSearch = () => {
 
   // State for storing available cities
   const [availableCities, setAvailableCities] = useState([]);
+
+  //State for longitude and latitude
+  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(null);
 
   // State for managing current results page
   const [currentResultsPage, setCurrentResultsPage] = useState(1);
@@ -87,11 +92,11 @@ const HotelsSearch = () => {
    */
   const onFiltersUpdate = (updatedFilter) => {
     setSelectedFiltersState(
-      selectedFiltersState.map((filterGroup) => {
+      selectedFiltersState?.map((filterGroup) => {
         if (filterGroup.filterId === updatedFilter.filterId) {
           return {
             ...filterGroup,
-            filters: filterGroup.filters.map((filter) => {
+            filters: filterGroup.filters?.map((filter) => {
               if (filter.id === updatedFilter.id) {
                 return {
                   ...filter,
@@ -112,6 +117,7 @@ const HotelsSearch = () => {
   };
 
   const onSearchButtonAction = () => {
+    console.log('Search button clicked');
     const activeFilters = getActiveFilters();
     const numGuest = Number(numGuestsInputValue);
     const checkInDate = formatDate(dateRange.startDate) ?? '';
@@ -134,7 +140,7 @@ const HotelsSearch = () => {
     selectedFiltersState.forEach((category) => {
       const selectedValues = category.filters
         .filter((filter) => filter.isSelected)
-        .map((filter) => filter.value);
+        ?.map((filter) => filter.value);
 
       if (selectedValues.length > 0) {
         filters[category.filterId] = selectedValues;
@@ -156,8 +162,19 @@ const HotelsSearch = () => {
    * Refreshes hotel data if the location is valid.
    * @param {string} value - The new location value.
    */
+  /**
+   * Handles changes in the location input.
+   * Fetches location suggestions based on the input value.
+   * @param {string} value - The new location value.
+   */
   const onLocationChangeInput = (value) => {
     setLocationInputValue(value.toLowerCase());
+
+    if (value.trim()) {
+      fetchAvailableCities(value);
+    } else {
+      setAvailableCities([]); // Clear suggestions if input is empty
+    }
   };
 
   /**
@@ -177,9 +194,9 @@ const HotelsSearch = () => {
 
     if (hasActiveFilters) {
       setSelectedFiltersState(
-        selectedFiltersState.map((filterGroup) => ({
+        selectedFiltersState?.map((filterGroup) => ({
           ...filterGroup,
-          filters: filterGroup.filters.map((filter) => ({
+          filters: filterGroup.filters?.map((filter) => ({
             ...filter,
             isSelected: false,
           })),
@@ -195,24 +212,38 @@ const HotelsSearch = () => {
    * @async
    */
   const fetchHotels = async (filters) => {
+    console.log(numGuestsInputValue, locationInputValue);
     setHotelsResults({
       isLoading: true,
       data: [],
       errors: [],
     });
-    const hotelsResultsResponse = await networkAdapter.get('/api/hotels', {
-      filters: JSON.stringify(filters),
-      currentPage: currentResultsPage,
-      advancedFilters: JSON.stringify([
+
+    const requestData = {
+      checkin: filters.checkInDate, // Assuming the date is in the correct format (YYYY-MM-DD)
+      checkout: filters.checkOutDate,
+      residency: 'gb', // You might want to make this dynamic
+      language: 'en', // You might want to make this dynamic
+      guests: [
         {
-          sortBy: sortByFilterValue.value,
+          adults: numGuestsInputValue,
+          children: [], // Add logic if you need to handle children
         },
-      ]),
-    });
+      ],
+      longitude: 13.38886,
+      latitude: 52.517036,
+      radius: filters.radius || 100, // Default radius to 100 if not provided
+      currency: 'EUR', // You might want to make this dynamic
+    };
+
+    const hotelsResultsResponse = await apiManager.post(
+      '/search/serp/geo/',
+      requestData
+    );
     if (hotelsResultsResponse) {
       setHotelsResults({
         isLoading: false,
-        data: hotelsResultsResponse.data.elements,
+        data: hotelsResultsResponse.data.hotels,
         errors: hotelsResultsResponse.errors,
         metadata: hotelsResultsResponse.metadata,
         pagination: hotelsResultsResponse.paging,
@@ -252,12 +283,28 @@ const HotelsSearch = () => {
   };
 
   // Fetches the list of available cities
-  const fetchAvailableCities = async () => {
-    const availableCitiesResponse = await networkAdapter.get(
-      '/api/availableCities'
-    );
-    if (availableCitiesResponse) {
-      setAvailableCities(availableCitiesResponse.data.elements);
+  const fetchAvailableCities = async (query) => {
+    try {
+      const requestData = {
+        query,
+        language: 'en',
+      };
+      // "Mirage: Your app tried to POST 'https://api.worldota.net/api/b2b/v3/search/multicomplete/', but there was no route defined to handle this request. Define a route for this endpoint in your routes() config. Did you forget to define a namespace? The existing namespace is undefined"
+
+      const availableCitiesResponse = await apiManager.post(
+        '/api/b2b/v3/search/multicomplete/',
+        requestData
+      );
+      console.log(availableCitiesResponse);
+
+      if (availableCitiesResponse) {
+        setAvailableCities(availableCitiesResponse.data.regions);
+      } else {
+        setAvailableCities([]);
+      }
+    } catch (error) {
+      console.error('Error fetching available cities:', error);
+      setAvailableCities([]);
     }
   };
 
@@ -282,9 +329,9 @@ const HotelsSearch = () => {
   // Update selected filters state when filters data changes
   useEffect(() => {
     setSelectedFiltersState(
-      filtersData.data.map((filterGroup) => ({
+      filtersData.data?.map((filterGroup) => ({
         ...filterGroup,
-        filters: filterGroup.filters.map((filter) => ({
+        filters: filterGroup.filters?.map((filter) => ({
           ...filter,
           isSelected: false,
         })),
@@ -357,7 +404,7 @@ const HotelsSearch = () => {
         onSortingFilterChange={onSortingFilterChange}
         sortingFilterOptions={sortingFilterOptions}
       />
-      {hotelsResults.pagination?.totalPages > 1 && (
+      {hotelsResults?.pagination?.totalPages > 1 && (
         <div className="my-4">
           <PaginationController
             currentPage={currentResultsPage}

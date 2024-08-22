@@ -1,0 +1,1 @@
+export const API_URL= "https://api.worldota.net/api/b2b/v3"

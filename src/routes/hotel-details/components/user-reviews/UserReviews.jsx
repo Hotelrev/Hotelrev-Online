@@ -107,7 +107,7 @@ const UserReviews = ({
           <span>Loading...</span>
         ) : (
           <div>
-            {reviewData.data.map((review, index) => (
+            {reviewData.data?.map((review, index) => (
               <Review
                 key={index}
                 reviewerName={review.reviewerName}

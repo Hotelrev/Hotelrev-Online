@@ -148,7 +148,7 @@ const AboutUs = () => {
       <div className="mt-10 lg:px-[50px] px-5">
         <h2 className="lg:text-3xl text-xl font-extrabold text-brand">FAQ</h2>
         <div className="space-y-5">
-          {faqData.map((faq, index) => (
+          {faqData?.map((faq, index) => (
             <div key={index} className="border-b border-gray-300">
               <button 
                 className="w-full text-left py-4 focus:outline-none flex justify-between items-center" 

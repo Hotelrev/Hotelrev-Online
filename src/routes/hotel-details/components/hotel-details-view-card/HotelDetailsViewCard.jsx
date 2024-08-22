@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import ReactImageGallery from 'react-image-gallery';
 
 const HotelDetailsViewCard = ({ hotelDetails }) => {
-  const images = hotelDetails.images.map((image) => ({
+  const images = hotelDetails.images?.map((image) => ({
     original: image.imageUrl,
     thumbnail: image.imageUrl,
     thumbnailClass: 'h-[80px]',
@@ -80,7 +80,7 @@ const HotelDetailsViewCard = ({ hotelDetails }) => {
               {hotelDetails.subtitle}
             </p>
             <div className="mt-2 space-y-2">
-              {hotelDetails.description.map((line, index) => (
+              {hotelDetails.description?.map((line, index) => (
                 <p key={index} className="text-gray-700">
                   {line}
                 </p>

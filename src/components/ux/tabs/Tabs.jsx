@@ -17,7 +17,7 @@ const Tabs = ({ children, isTabsVisible, wrapperRef }) => {
       >
         <div ref={wrapperRef}>
           <ul className="flex flex-col border w-[220px]">
-            {children.map((child) => {
+            {children?.map((child) => {
               const { label, icon } = child.props;
               return (
                 <li
@@ -45,7 +45,7 @@ const Tabs = ({ children, isTabsVisible, wrapperRef }) => {
         </div>
       </div>
       <div className="px-4 w-full">
-        {children.map((child) => {
+        {children?.map((child) => {
           if (child.props.label !== activeTab) return undefined;
           return child.props.children;
         })}

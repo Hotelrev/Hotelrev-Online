@@ -59,7 +59,7 @@ const DropdownButton = (props) => {
           aria-labelledby="dropdownDefaultButton"
         >
           {props.options &&
-            props.options.map((option, index) => (
+            props.options?.map((option, index) => (
               <li key={index}>
                 <button
                   onClick={option.onClick}

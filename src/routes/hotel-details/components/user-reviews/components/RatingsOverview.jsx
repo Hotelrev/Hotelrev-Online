@@ -21,7 +21,7 @@ const RatingsOverview = ({ averageRating, ratingsCount, starCounts }) => {
       <div className="text-sm">Based on {ratingsCount} reviews</div>
       {Object.keys(starCounts)
         .sort((a, b) => b - a)
-        .map((starRating) => (
+        ?.map((starRating) => (
           <div className="flex items-center my-1 gap-x-4" key={starRating}>
             <div className="w-8 pr-2 flex items-center">
               {starRating}{' '}
