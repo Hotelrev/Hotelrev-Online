@@ -3,10 +3,10 @@
 // Usage: const response = await networkAdapter.post('/api/hotel', { name: 'Hotel Name' });
 class NetworkAdapter {
   static API_CONFIG = {
-    MIRAGE: window.location.origin,
     EXPRESS: 'http://localhost:4000',
   };
-  static API_URL = NetworkAdapter.API_CONFIG.MIRAGE;
+  static API_URL = NetworkAdapter.API_CONFIG.EXPRESS;
+
   async get(endpoint, params = {}) {
     const endpointURL = new URL(endpoint, NetworkAdapter.API_URL);
     try {
