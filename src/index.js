@@ -7,7 +7,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import Home from './routes/home/Home';
 import { AuthProvider } from './contexts/AuthContext';
-import { makeServer } from './mirage/mirageServer';
 import HotelDetails from './routes/hotel-details/HotelDetails';
 import Login from './routes/login/Login';
 import Register from './routes/register/Register';
@@ -17,12 +16,6 @@ import ForgotPassword from './routes/forgot-password/ForgotPassword';
 import Checkout from 'routes/checkout/Checkout';
 import Contact from 'routes/contact/Contact';
 import PrivacyPolicy from 'routes/privacy-policy/PrivacyPolicy';
-
-// if (process.env.NODE_ENV === 'development') {
-//   makeServer();
-// }
-
-makeServer();
 
 const router = createBrowserRouter([
   {
@@ -87,3 +80,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
