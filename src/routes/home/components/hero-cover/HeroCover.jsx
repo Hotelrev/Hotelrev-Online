@@ -21,7 +21,7 @@ const HeroCover = (props) => {
         <></>
         <div className="hero-content__text py-4">
           <h3 className="text-4xl font-medium">
-            Discover your perfect stay in Africa
+            Discover your perfect stay today
           </h3>
           <p className="my-1">
             Choose from our 2,500,000 hotels world wide. Enter your dates to see the latest prices and book a stay!
