@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import comingsoon from '../../../assests/logos/comingsoon.gif';
+import comingsoon from '../../../assets/logos/comingsoon.gif';
 import { FaFacebookF, FaInstagram, FaTwitter, FaEnvelope } from 'react-icons/fa';
 
 const LaunchingSoon = () => {
@@ -34,15 +34,15 @@ const LaunchingSoon = () => {
           {showMessage2 && <p className="text-red-500 mb-4">Please enter your email address!</p>}
         </div>
         <div className="w-full">
-          <input 
-            type="email" 
-            placeholder="Enter your email to get notified" 
+          <input
+            type="email"
+            placeholder="Enter your email to get notified"
             className="w-full p-2 border border-gray-300 rounded-lg mb-4 outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button 
+          <button
             className="w-full bg-[#074498] text-white py-2 rounded-lg hover:bg-blue-700"
             onClick={handleNotifyMeClick}
           >

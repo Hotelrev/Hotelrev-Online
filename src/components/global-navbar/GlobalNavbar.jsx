@@ -1,4 +1,4 @@
-import logo from 'assests/logos/HotelRev.png';
+import logo from 'assets/logos/HotelRev.png';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import HamburgerMenu from 'components/hamburger-menu/HamburgerMenu';

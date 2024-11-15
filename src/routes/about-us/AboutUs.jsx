@@ -1,4 +1,4 @@
-import aboutUs from '../../assests/logos/about-us.gif'
+import aboutUs from '../../assets/logos/about-us.gif'
 import { useState } from 'react';
 
 const AboutUs = () => {
@@ -44,22 +44,22 @@ const AboutUs = () => {
         <div className="lg:w-1/2 lg:pr-10">
           <h1 className="lg:text-3xl text-xl font-extrabold text-brand">About Us</h1>
           <p>
-            At Hotelrev, we are dedicated to revolutionizing the hotel booking 
-            experience across Africa. As a premier online travel agency, our 
-            mission is to make the process of finding and booking accommodations 
-            seamless, efficient, and enjoyable for our customers. We understand 
-            the unique challenges faced by hotels with limited social media 
-            presence, as well as travelers not being able to make payments with 
-            their local debit cards, and we are committed to promoting these 
-            hidden gems to a broader audience and also making sure anyone can 
+            At Hotelrev, we are dedicated to revolutionizing the hotel booking
+            experience across Africa. As a premier online travel agency, our
+            mission is to make the process of finding and booking accommodations
+            seamless, efficient, and enjoyable for our customers. We understand
+            the unique challenges faced by hotels with limited social media
+            presence, as well as travelers not being able to make payments with
+            their local debit cards, and we are committed to promoting these
+            hidden gems to a broader audience and also making sure anyone can
             book hotels seamlessly from anywhere in the world.
             <br />
-            Our platform is designed to cater to the needs of solo travelers, 
-            travel agents, and companies, offering a wide variety of quality 
-            hotels at unbeatable prices. With a user-friendly interface, 
-            extensive hotel listings, and exclusive discounts, Hotelrev ensures 
-            that every booking is a hassle-free and rewarding experience. Our 
-            commitment to excellence and customer satisfaction sets us apart 
+            Our platform is designed to cater to the needs of solo travelers,
+            travel agents, and companies, offering a wide variety of quality
+            hotels at unbeatable prices. With a user-friendly interface,
+            extensive hotel listings, and exclusive discounts, Hotelrev ensures
+            that every booking is a hassle-free and rewarding experience. Our
+            commitment to excellence and customer satisfaction sets us apart
             in the competitive travel industry.
           </p>
         </div>
@@ -72,24 +72,24 @@ const AboutUs = () => {
         <div className="">
           <h2 className="lg:text-3xl text-xl font-extrabold text-brand">Our Vision</h2>
           <p>
-            Our vision at Hotelrev is to become the leading online travel agency 
-            in Africa, recognized for our exceptional service, innovative solutions, 
-            and unwavering commitment to customer satisfaction. We aspire to create 
-            a world where every traveler can effortlessly find and book the perfect 
+            Our vision at Hotelrev is to become the leading online travel agency
+            in Africa, recognized for our exceptional service, innovative solutions,
+            and unwavering commitment to customer satisfaction. We aspire to create
+            a world where every traveler can effortlessly find and book the perfect
             accommodation, no matter their destination.
             <br />
-            We envision a future where Hotelrev is synonymous with trust, quality, 
-            and convenience, continuously expanding our reach and enhancing our 
-            offerings to meet the evolving needs of our customers. Through 
-            strategic partnerships, cutting-edge technology, and a deep 
-            understanding of the African travel landscape, we aim to empower 
-            travelers and support the growth of the hospitality industry across 
+            We envision a future where Hotelrev is synonymous with trust, quality,
+            and convenience, continuously expanding our reach and enhancing our
+            offerings to meet the evolving needs of our customers. Through
+            strategic partnerships, cutting-edge technology, and a deep
+            understanding of the African travel landscape, we aim to empower
+            travelers and support the growth of the hospitality industry across
             the continent.
             <br />
-            As we move forward, our focus remains on delivering unparalleled 
-            value, fostering lasting relationships with our partners, and 
-            making a positive impact on the communities we serve. At Hotelrev, 
-            we are driven by a passion for travel and a commitment to 
+            As we move forward, our focus remains on delivering unparalleled
+            value, fostering lasting relationships with our partners, and
+            making a positive impact on the communities we serve. At Hotelrev,
+            we are driven by a passion for travel and a commitment to
             excellence, striving every day to turn our vision into reality.
           </p>
         </div>
@@ -99,7 +99,7 @@ const AboutUs = () => {
         <div className="">
           <h2 className="lg:text-3xl text-xl font-extrabold text-brand">Why Choose Us?</h2>
           <p className='text-lg'>
-            Choosing Hotelrev means partnering with a travel agency committed to providing the 
+            Choosing Hotelrev means partnering with a travel agency committed to providing the
             best hotel booking experience in Africa. Here's why:
           </p>
           <ul className="ml-7 list-disc">
@@ -150,14 +150,14 @@ const AboutUs = () => {
         <div className="space-y-5">
           {faqData?.map((faq, index) => (
             <div key={index} className="border-b border-gray-300">
-              <button 
-                className="w-full text-left py-4 focus:outline-none flex justify-between items-center" 
+              <button
+                className="w-full text-left py-4 focus:outline-none flex justify-between items-center"
                 onClick={() => toggleAccordion(index)}
               >
                 <span className="text-lg font-medium">{faq.question}</span>
                 <span>{activeIndex === index ? '-' : '+'}</span>
               </button>
-              <div 
+              <div
                 className={`overflow-hidden transition-max-height duration-500 ease-in-out ${activeIndex === index ? 'max-h-screen' : 'max-h-0'}`}
               >
                 <p className="py-2">{faq.answer}</p>

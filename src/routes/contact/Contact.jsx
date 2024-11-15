@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { MdPhone, MdEmail } from "react-icons/md";
-import customerCare from '../../assests/logos/hotelrev-customer-car.png'
+import customerCare from '../../assets/logos/hotelrev-customer-car.png'
 
 const Contact = () => {
     const [successMessage, setSuccessMessage] = useState(false)
