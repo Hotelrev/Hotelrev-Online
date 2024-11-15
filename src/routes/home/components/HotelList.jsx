@@ -117,7 +117,7 @@ const hotels = [
 
 const HotelList = () => {
   return (
-    <div className="p-6 px-20">
+    <div className="p-6 px-10 lg:px-20">
       <h2 className="text-brand text-lg font-semibold mb-4 text-center">LOCATIONS</h2>
       <h3 className="text-2xl font-medium mb-6 text-center">Handpicked nearby hotels for you</h3>
       <div>

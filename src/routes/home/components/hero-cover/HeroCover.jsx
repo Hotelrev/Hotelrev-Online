@@ -61,8 +61,9 @@ const HeroCover = (props) => {
         />
       </div>
 
-      <div className="flex flex-row gap-9 items-center text-white p-6 pb-10 mx-auto mt-12 max-w-[90vw]">
-  <div className='max-w-xl'>
+      <div className="flex flex-col lg:flex-row gap-9 items-center text-white p-6 pb-10 mx-auto mt-12 max-w-[90vw]">
+  {/* Text Section */}
+  <div className="max-w-xl text-center lg:text-left">
     <h2 className="text-[#CBAE37] text-lg mb-4 font-normal">DESTINATION CHOICE</h2>
     <h3 className="text-3xl font-medium mb-3">Book Hotels at Popular Destinations</h3>
     <p className="text-base mb-6 font-thin">
@@ -73,10 +74,14 @@ const HeroCover = (props) => {
   </div>
 
   {/* Image Gallery */}
-  <div className="grid grid-cols-3 gap-2">
+  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
     {destinations.map((destination) => (
       <div key={destination.id} className="relative group">
-        <img src={destination.imageUrl} alt={destination.name} className="rounded-sm w-60 h-full object-cove transform group-hover:scale-110 transition-transform duration-300 ease-in-out" />
+        <img
+          src={destination.imageUrl}
+          alt={destination.name}
+          className="rounded-sm w-60 object-cover transform group-hover:scale-110 transition-transform duration-300 ease-in-out"
+        />
         <span className="absolute top-1 left-1 text-white text-lg font-medium px-2 py-1 rounded transform group-hover:scale-125 transition-transform duration-300 ease-in-out">
           {destination.name}
         </span>
@@ -84,6 +89,7 @@ const HeroCover = (props) => {
     ))}
   </div>
 </div>
+
 
     </div>
   );
