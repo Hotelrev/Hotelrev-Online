@@ -6,7 +6,10 @@ import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
 import ResultsContainer from 'components/results-container/ResultsContainer';
 import { formatDate } from 'utils/date-helpers';
 import { useNavigate } from 'react-router-dom';
-import LaunchingSoon from './components/LaunchingSoon';
+import HotelList from './components/HotelList';
+import OfferList from './components/list-of-offers/OffersList'
+import AboutUs from './components/aboutUs/AboutUs';
+import LimitedOffers from './components/list-of-offers/LimitedOffers';
 
 /**
  * Home component that renders the main page of the application.
@@ -135,7 +138,10 @@ const Home = () => {
         onSearchButtonAction={onSearchButtonAction}
       />
 
-      <LaunchingSoon/>
+      <HotelList />
+      <OfferList />
+      <AboutUs />
+      <LimitedOffers />
       {/* <div className="container mx-auto">
         <PopularLocations popularDestinationsData={popularDestinationsData} />
         <div className="my-8">
