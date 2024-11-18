@@ -1,4 +1,5 @@
 import GlobalSearchBox from 'components/global-search-box/GlobalSearchbox';
+import Carousel from '../carousel/Carousel'
 
 // Import Destination Choices Images
 import mumbai from "../../../../assets/destinationChoice/mumbai.png"
@@ -61,7 +62,7 @@ const HeroCover = (props) => {
         />
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-9 items-center text-white p-6 pb-10 mx-auto mt-12 max-w-[90vw]">
+      <div className="flex flex-col lg:flex-row gap-9 items-center text-white p-2 pb-10 mx-auto mt-12 max-w-[90vw]">
   {/* Text Section */}
   <div className="max-w-xl text-center lg:text-left">
     <h2 className="text-[#CBAE37] text-lg mb-4 font-normal">DESTINATION CHOICE</h2>
@@ -89,7 +90,7 @@ const HeroCover = (props) => {
     ))}
   </div>
 </div>
-
+<Carousel />
 
     </div>
   );
