@@ -14,15 +14,15 @@ const Carousel = () => {
   ];
 
   return (
-    <div className="w-[100vw] pl-10 lg:pl-20 overflow-hidden text-white py-4">
+    <div className="w-[100vw] pl-2 md:pl-5 lg:pl-20 overflow-hidden text-white py-4">
       <div className="container mx-auto flex items-center">
-        <div className="w-fit text-center text-lg font-bold whitespace-nowrap p-4">Trusted By</div>
+        <div className="w-fit text-center md:text-lg font-bold whitespace-nowrap p-4">Trusted By</div>
         <div className="marquee min-w-max overflow-hidden relative">
             <div className="marquee-content gap-10 p-4">
               {images.concat(images).map((partner, index) => (
                 <div
                   key={index}
-                  className="flex items-center"
+                  className="flex items-center w-[30vw] md:w-fit"
                 >
                   <img
                     src={partner.src}
