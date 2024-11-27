@@ -13,6 +13,7 @@ import Register from './routes/register/Register';
 import AboutUs from './routes/about-us/AboutUs';
 import BaseLayout from './routes/layouts/base-layout/BaseLayout';
 import ForgotPassword from './routes/forgot-password/ForgotPassword';
+import ResetPassword from './routes/reset-password/ResetPassword';
 import Checkout from 'routes/checkout/Checkout';
 import Contact from 'routes/contact/Contact';
 import PrivacyPolicy from 'routes/privacy-policy/PrivacyPolicy';
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
         element: <ForgotPassword />,
       },
       {
+        path: '/reset-password/:token',
+        element: <ResetPassword />,
+      },
+      {
         path: '/checkout',
         element: <Checkout />,
       },
@@ -80,4 +85,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-

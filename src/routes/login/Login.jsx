@@ -1,7 +1,7 @@
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { networkAdapter } from 'services/NetworkAdapter';
-import React, { useContext } from 'react';
+import api from '../../services/axiosApi';
 import { AuthContext } from 'contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import validations from 'utils/validations';
@@ -24,6 +24,7 @@ const Login = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   /**
    * Handles input changes for the login form fields.
@@ -40,18 +41,65 @@ const Login = () => {
    * Navigates to the user profile on successful login or sets an error message on failure.
    * @param {Object} e - The event object from the form submission.
    */
+  // const handleLoginSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (validations.validate('email', loginData.email)) {
+  //     const response = await networkAdapter.post('api/users/login', loginData);
+  //     if (response && response.data.token) {
+  //       context.triggerAuthCheck();
+  //       navigate('/user-profile');
+  //     } else if (response && response.errors.length > 0) {
+  //       setErrorMessage(response.errors[0]);
+  //     }
+  //   } else {
+  //     setErrorMessage(LOGIN_MESSAGES.FAILED);
+  //   }
+  // };
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
     if (validations.validate('email', loginData.email)) {
-      const response = await networkAdapter.post('api/users/login', loginData);
-      if (response && response.data.token) {
-        context.triggerAuthCheck();
-        navigate('/user-profile');
-      } else if (response && response.errors.length > 0) {
-        setErrorMessage(response.errors[0]);
+      setLoading(true);
+      try {
+        // Use Axios instance for the login request
+        const response = await api.post('/auth/login', loginData,);
+
+        // Destructure the response data
+        const { accessToken, refreshToken, errors } = response.data;
+
+        if (accessToken) {
+          // Store the tokens in localStorage
+          localStorage.setItem('token', accessToken);
+
+          if (refreshToken) {
+            localStorage.setItem('refreshToken', refreshToken);
+          }
+
+          // Trigger context auth check (if applicable) and navigate
+          context.triggerAuthCheck();
+          // navigate("/user-profile");
+          navigate('/user-profile');
+        } else if (errors && errors.length > 0) {
+          // Handle errors returned from the server
+          setErrorMessage(errors[0]);
+        } else {
+          // Generic login failure message
+          setErrorMessage(LOGIN_MESSAGES.FAILED);
+        }
+      } catch (error) {
+        // Handle unexpected errors during login
+        setErrorMessage('An unexpected error occurred. Please try again.');
+        console.error(
+          'Error during login:',
+          error.response?.data || error.message
+        );
+      } finally {
+        setLoading(false);
       }
     } else {
+      // Handle validation errors
       setErrorMessage(LOGIN_MESSAGES.FAILED);
     }
   };
@@ -88,6 +136,7 @@ const Login = () => {
                 onChange={handleInputChange}
                 autoComplete="username"
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                disabled={loading}
               />
             </div>
             <div className="mb-6">
@@ -99,6 +148,7 @@ const Login = () => {
                 onChange={handleInputChange}
                 autoComplete="current-password"
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                disabled={loading}
               />
             </div>
             {errorMessage && (
@@ -113,8 +163,9 @@ const Login = () => {
                 <button
                   type="submit"
                   className="bg-brand hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                  disabled={loading}
                 >
-                  Log In
+                  {loading ? <span class="loader"></span> : 'Log In'}
                 </button>
               </div>
               <div className="flex flex-wrap justify-center my-3 w-full">
@@ -150,6 +201,29 @@ const Login = () => {
         <small className="text-slate-600">Email: user1@example.com</small>
         <small className="text-slate-600">Password: password1</small>
       </div> */}
+      <style>
+        {`
+    .loader {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #FFF;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+      }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    }
+    `}
+      </style>
     </>
   );
 };
