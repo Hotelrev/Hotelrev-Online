@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { networkAdapter } from 'services/NetworkAdapter';
+// import { networkAdapter } from 'services/NetworkAdapter';
+import api from 'services/axiosApi';
 import validations from 'utils/validations';
 import Toast from 'components/ux/toast/Toast';
 
@@ -31,16 +32,29 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     if (validations.validate('email', loginData.email)) {
-      const response = await networkAdapter.post('/api/forgot', loginData);
-      if (response) {
-        setsuccess(true);
-      } else {
-        setErrorMessage('Invalid email.');
+      try {
+        // Use Axios instance for the POST request
+        const response = await api.post('/password/forgot', loginData);
+
+        // Check if the response indicates success
+        if (response?.data?.success) {
+          setsuccess(true); // Set success state
+        } else {
+          // Handle specific error messages or fallback
+          setErrorMessage(response?.data?.message || 'Invalid email.');
+        }
+      } catch (error) {
+        // Handle unexpected errors during the request
+        console.error('Error during forgot password request:', error.response?.data || error.message);
+        setErrorMessage('An unexpected error occurred. Please try again.');
+      } finally {
       }
     } else {
+      // Handle validation error
       setErrorMessage('Invalid email.');
     }
   };
+
   return (
     <>
       <div>

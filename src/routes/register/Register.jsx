@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { networkAdapter } from 'services/NetworkAdapter';
+// import { networkAdapter } from 'services/NetworkAdapter';
+import api from 'services/axiosApi';
 import { useNavigate } from 'react-router-dom';
 import Toast from 'components/ux/toast/Toast';
 import { REGISTRATION_MESSAGES } from 'utils/constants';
@@ -44,11 +45,27 @@ const Register = () => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await networkAdapter.put('/api/users/register', formData);
-    if (response && response.errors && response.errors.length < 1) {
-      setSuccessMessage(REGISTRATION_MESSAGES.SUCCESS);
-      setShowSuccess(true);
-      setTimeout(() => navigate('/login'), 2000);
+    try{
+      const response = await api.post('/user/register', formData);
+
+      // Check for errors or a successful response
+      if (response && response.data && response.data.errors?.length < 1) {
+        setSuccessMessage(REGISTRATION_MESSAGES.SUCCESS);
+        setShowSuccess(true);
+        setTimeout(() => navigate('/login'), 2000);
+      }else if (response?.data?.errors?.length > 0) {
+        // Handle errors returned from the server
+        console.log(response.data.errors[0]);
+      } else {
+        // Generic error message for unexpected failures
+        console.log('An unexpected error occurred during registration.');
+      }
+    }catch (error) {
+      // Handle unexpected errors during registration
+      console.error('Error during registration:', error.response?.data || error.message);
+      console.log('An unexpected error occurred. Please try again.');
+    } finally {
+      // setLoading(false); // Optional: Hide the loading state
     }
   };
 
