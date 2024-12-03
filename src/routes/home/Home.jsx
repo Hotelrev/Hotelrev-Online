@@ -1,11 +1,11 @@
 import HeroCover from './components/hero-cover/HeroCover';
-import PopularLocations from './components/popular-locations/popular-locations';
-import { networkAdapter } from 'services/NetworkAdapter';
-import { useState, useEffect } from 'react';
-import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
-import ResultsContainer from 'components/results-container/ResultsContainer';
-import { formatDate } from 'utils/date-helpers';
-import { useNavigate } from 'react-router-dom';
+// import PopularLocations from './components/popular-locations/popular-locations';
+// import { networkAdapter } from 'services/NetworkAdapter';
+// import { useState, useEffect } from 'react';
+// import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
+// import ResultsContainer from 'components/results-container/ResultsContainer';
+// import { formatDate } from 'utils/date-helpers';
+// import { useNavigate } from 'react-router-dom';
 import HotelList from './components/HotelList';
 import OfferList from './components/list-of-offers/OffersList'
 import AboutUs from './components/aboutUs/AboutUs';
@@ -16,126 +16,85 @@ import LimitedOffers from './components/list-of-offers/LimitedOffers';
  * It includes a navigation bar, hero cover, popular locations, results container, and footer.
  */
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  // State variables
-  const [isDatePickerVisible, setisDatePickerVisible] = useState(false);
-  const [locationInputValue, setLocationInputValue] = useState('pune');
-  const [numGuestsInputValue, setNumGuestsInputValue] = useState('');
-  const [popularDestinationsData, setPopularDestinationsData] = useState({
-    isLoading: true,
-    data: [],
-    errors: [],
-  });
-  const [hotelsResults, setHotelsResults] = useState({
-    isLoading: true,
-    data: [],
-    errors: [],
-  });
+  // // State variables
+  // const [isDatePickerVisible, setisDatePickerVisible] = useState(false);
+  // const [locationInputValue, setLocationInputValue] = useState('pune');
+  // const [numGuestsInputValue, setNumGuestsInputValue] = useState('');
+  // const [popularDestinationsData, setPopularDestinationsData] = useState({
+  //   isLoading: true,
+  //   data: [],
+  //   errors: [],
+  // });
+  // const [hotelsResults, setHotelsResults] = useState({
+  //   isLoading: true,
+  //   data: [],
+  //   errors: [],
+  // });
 
-  // State for storing available cities
-  const [availableCities, setAvailableCities] = useState([]);
+  // // State for storing available cities
+  // const [availableCities, setAvailableCities] = useState([]);
 
-  const [dateRange, setDateRange] = useState([
-    {
-      startDate: null,
-      endDate: null,
-      key: 'selection',
-    },
-  ]);
+  // const [dateRange, setDateRange] = useState([
+  //   {
+  //     startDate: null,
+  //     endDate: null,
+  //     key: 'selection',
+  //   },
+  // ]);
 
-  const onDatePickerIconClick = () => {
-    setisDatePickerVisible(!isDatePickerVisible);
-  };
+  // useEffect(() => {
+  //   /**
+  //    * Fetches initial data for the Home route.
+  //    * @returns {Promise<void>} A promise that resolves when the data is fetched.
+  //    */
+  //   const getInitialData = async () => {
+  //     const popularDestinationsResponse = await networkAdapter.get(
+  //       '/api/popularDestinations'
+  //     );
+  //     const hotelsResultsResponse =
+  //       await networkAdapter.get('/api/nearbyHotels');
 
-  const onLocationChangeInput = (newValue) => {
-    setLocationInputValue(newValue);
-  };
+  //     const availableCitiesResponse = await networkAdapter.get(
+  //       '/api/availableCities'
+  //     );
+  //     if (availableCitiesResponse) {
+  //       setAvailableCities(availableCitiesResponse.data.elements);
+  //     }
 
-  const onNumGuestsInputChange = (numGuests) => {
-    if (
-      (numGuests < MAX_GUESTS_INPUT_VALUE && numGuests > 0) ||
-      numGuests === ''
-    ) {
-      setNumGuestsInputValue(numGuests);
-    }
-  };
-
-  const onDateChangeHandler = (ranges) => {
-    setDateRange([ranges.selection]);
-  };
-
-  /**
-   * Handles the click event of the search button.
-   * It gathers the number of guests, check-in and check-out dates, and selected city
-   * from the component's state, and then navigates to the '/hotels' route with this data.
-   */
-  const onSearchButtonAction = () => {
-    const numGuest = Number(numGuestsInputValue);
-    const checkInDate = formatDate(dateRange[0].startDate) ?? '';
-    const checkOutDate = formatDate(dateRange[0].endDate) ?? '';
-    const city = locationInputValue;
-    navigate('/hotels', {
-      state: {
-        numGuest,
-        checkInDate,
-        checkOutDate,
-        city,
-      },
-    });
-  };
-
-  useEffect(() => {
-    /**
-     * Fetches initial data for the Home route.
-     * @returns {Promise<void>} A promise that resolves when the data is fetched.
-     */
-    const getInitialData = async () => {
-      const popularDestinationsResponse = await networkAdapter.get(
-        '/api/popularDestinations'
-      );
-      const hotelsResultsResponse =
-        await networkAdapter.get('/api/nearbyHotels');
-
-      const availableCitiesResponse = await networkAdapter.get(
-        '/api/availableCities'
-      );
-      if (availableCitiesResponse) {
-        setAvailableCities(availableCitiesResponse.data.elements);
-      }
-
-      if (popularDestinationsResponse) {
-        setPopularDestinationsData({
-          isLoading: false,
-          data: popularDestinationsResponse.data.elements,
-          errors: popularDestinationsResponse.errors,
-        });
-      }
-      if (hotelsResultsResponse) {
-        setHotelsResults({
-          isLoading: false,
-          data: hotelsResultsResponse.data.elements,
-          errors: hotelsResultsResponse.errors,
-        });
-      }
-    };
-    getInitialData();
-  }, []);
+  //     if (popularDestinationsResponse) {
+  //       setPopularDestinationsData({
+  //         isLoading: false,
+  //         data: popularDestinationsResponse.data.elements,
+  //         errors: popularDestinationsResponse.errors,
+  //       });
+  //     }
+  //     if (hotelsResultsResponse) {
+  //       setHotelsResults({
+  //         isLoading: false,
+  //         data: hotelsResultsResponse.data.elements,
+  //         errors: hotelsResultsResponse.errors,
+  //       });
+  //     }
+  //   };
+  //   getInitialData();
+  // }, []);
 
   return (
     <>
       <HeroCover
-        locationInputValue={locationInputValue}
-        numGuestsInputValue={numGuestsInputValue}
-        locationTypeheadResults={availableCities}
-        isDatePickerVisible={isDatePickerVisible}
-        setisDatePickerVisible={setisDatePickerVisible}
-        onLocationChangeInput={onLocationChangeInput}
-        onNumGuestsInputChange={onNumGuestsInputChange}
-        dateRange={dateRange}
-        onDateChangeHandler={onDateChangeHandler}
-        onDatePickerIconClick={onDatePickerIconClick}
-        onSearchButtonAction={onSearchButtonAction}
+        // locationInputValue={locationInputValue}
+        // numGuestsInputValue={numGuestsInputValue}
+        // locationTypeheadResults={availableCities}
+        // isDatePickerVisible={isDatePickerVisible}
+        // setisDatePickerVisible={setisDatePickerVisible}
+        // onLocationChangeInput={onLocationChangeInput}
+        // onNumGuestsInputChange={onNumGuestsInputChange}
+        // dateRange={dateRange}
+        // onDateChangeHandler={onDateChangeHandler}
+        // onDatePickerIconClick={onDatePickerIconClick}
+        // onSearchButtonAction={onSearchButtonAction}
       />
 
       <HotelList />

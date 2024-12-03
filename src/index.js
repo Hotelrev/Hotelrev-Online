@@ -17,6 +17,7 @@ import ResetPassword from './routes/reset-password/ResetPassword';
 import Checkout from 'routes/checkout/Checkout';
 import Contact from 'routes/contact/Contact';
 import PrivacyPolicy from 'routes/privacy-policy/PrivacyPolicy';
+// import TestComponent from 'routes/testing/TestComponent';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />,
       },
+      // {
+      //   path: '/testing',
+      //   element: <TestComponent />,
+      // },
       {
         path: '/hotels',
         element: <HotelsSearch />,
