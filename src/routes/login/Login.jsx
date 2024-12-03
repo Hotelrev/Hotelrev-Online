@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/axiosApi';
-import { AuthContext } from 'contexts/AuthContext';
+// import { AuthContext } from 'contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import validations from 'utils/validations';
 import Toast from 'components/ux/toast/Toast';
 import { LOGIN_MESSAGES } from 'utils/constants';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 /**
  * Login Component
@@ -17,12 +19,11 @@ import { LOGIN_MESSAGES } from 'utils/constants';
  */
 const Login = () => {
   const navigate = useNavigate();
-  const context = useContext(AuthContext);
+  // const context = useContext(AuthContext);
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
   });
-
   const [errorMessage, setErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -63,33 +64,40 @@ const Login = () => {
     if (validations.validate('email', loginData.email)) {
       setLoading(true);
       try {
-        // Use Axios instance for the login request
-        const response = await api.post('/auth/login', loginData,);
+        const response = await api.post('/auth/login', loginData);
 
-        // Destructure the response data
         const { accessToken, refreshToken, errors } = response.data;
 
         if (accessToken) {
-          // Store the tokens in localStorage
-          localStorage.setItem('token', accessToken);
+          // Store access token in cookies
+          Cookies.set('accessToken', accessToken, {
+            expires: 1, // Token expiry in 1 day
+            secure: true,
+            sameSite: 'Strict',
+          });
 
+          // Optionally store refresh token in cookies
           if (refreshToken) {
-            localStorage.setItem('refreshToken', refreshToken);
+            Cookies.set('refreshToken', refreshToken, {
+              expires: 7, // Refresh token expiry in 7 days
+              secure: true,
+              sameSite: 'Strict',
+            });
           }
 
+          // Decode the token and log it (or use it)
+          const decodedToken = jwtDecode(accessToken);
+          console.log('Decoded Token:', decodedToken);
+
           // Trigger context auth check (if applicable) and navigate
-          context.triggerAuthCheck();
-          // navigate("/user-profile");
+          // context.triggerAuthCheck();
           navigate('/user-profile');
         } else if (errors && errors.length > 0) {
-          // Handle errors returned from the server
           setErrorMessage(errors[0]);
         } else {
-          // Generic login failure message
           setErrorMessage(LOGIN_MESSAGES.FAILED);
         }
       } catch (error) {
-        // Handle unexpected errors during login
         setErrorMessage('An unexpected error occurred. Please try again.');
         console.error(
           'Error during login:',
@@ -99,10 +107,10 @@ const Login = () => {
         setLoading(false);
       }
     } else {
-      // Handle validation errors
       setErrorMessage(LOGIN_MESSAGES.FAILED);
     }
   };
+
 
   /**
    * Clears the current error message displayed to the user.

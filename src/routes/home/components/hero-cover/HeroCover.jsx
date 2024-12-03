@@ -10,20 +10,20 @@ import oslo from "../../../../assets/destinationChoice/oslo.png"
 import paris from "../../../../assets/destinationChoice/paris.png"
 
 
-const HeroCover = (props) => {
-  const {
-    locationInputValue,
-    numGuestsInputValue,
-    isDatePickerVisible,
-    onLocationChangeInput,
-    onNumGuestsInputChange,
-    dateRange,
-    onDateChangeHandler,
-    onDatePickerIconClick,
-    onSearchButtonAction,
-    locationTypeheadResults,
-    setisDatePickerVisible,
-  } = props;
+const HeroCover = () => {
+  // const {
+  //   locationInputValue,
+  //   numGuestsInputValue,
+  //   isDatePickerVisible,
+  //   onLocationChangeInput,
+  //   onNumGuestsInputChange,
+  //   dateRange,
+  //   onDateChangeHandler,
+  //   onDatePickerIconClick,
+  //   onSearchButtonAction,
+  //   locationTypeheadResults,
+  //   setisDatePickerVisible,
+  // } = props;
 
   const destinations = [
     { id: 1, name: 'Mumbai', imageUrl: mumbai },
@@ -48,17 +48,17 @@ const HeroCover = (props) => {
           </p>
         </div>
         <GlobalSearchBox
-          locationInputValue={locationInputValue}
-          locationTypeheadResults={locationTypeheadResults}
-          numGuestsInputValue={numGuestsInputValue}
-          isDatePickerVisible={isDatePickerVisible}
-          setisDatePickerVisible={setisDatePickerVisible}
-          onLocationChangeInput={onLocationChangeInput}
-          onNumGuestsInputChange={onNumGuestsInputChange}
-          dateRange={dateRange}
-          onDateChangeHandler={onDateChangeHandler}
-          onDatePickerIconClick={onDatePickerIconClick}
-          onSearchButtonAction={onSearchButtonAction}
+          // locationInputValue={locationInputValue}
+          // locationTypeheadResults={locationTypeheadResults}
+          // numGuestsInputValue={numGuestsInputValue}
+          // isDatePickerVisible={isDatePickerVisible}
+          // setisDatePickerVisible={setisDatePickerVisible}
+          // onLocationChangeInput={onLocationChangeInput}
+          // onNumGuestsInputChange={onNumGuestsInputChange}
+          // dateRange={dateRange}
+          // onDateChangeHandler={onDateChangeHandler}
+          // onDatePickerIconClick={onDatePickerIconClick}
+          // onSearchButtonAction={onSearchButtonAction}
         />
       </div>
 

@@ -1,33 +1,46 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { networkAdapter } from 'services/NetworkAdapter';
+import Cookies from 'js-cookie';
+import api from 'services/axiosApi';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
-  const [authCheckTrigger, setAuthCheckTrigger] = useState(false);
+  const [token, setToken] = useState(Cookies.get('accessToken'));
 
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      const response = await networkAdapter.get('api/users/auth-user');
-      if (response && response.data) {
-        setIsAuthenticated(response.data.isAuthenticated);
-        setUserDetails(response.data.userDetails);
+    const fetchUserProfile = async () => {
+      if (token) {
+        try {
+          // Decode the token to get user information
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          const userId = decodedToken.sub;
+
+          const response = await api.get(`/user/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response && response.data) {
+            setUserDetails(response.data);
+          } else {
+            setUserDetails(null);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user data:', error);
+          setUserDetails(null);
+        }
+      } else {
+        setUserDetails(null);
       }
     };
 
-    checkAuthStatus();
-  }, [authCheckTrigger]);
-
-  const triggerAuthCheck = () => {
-    setAuthCheckTrigger((prev) => !prev);
-  };
+    fetchUserProfile();
+  }, [token]); // Run whenever the token changes
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, userDetails, triggerAuthCheck }}
-    >
+    <AuthContext.Provider value={{ token, userDetails }}>
       {children}
     </AuthContext.Provider>
   );

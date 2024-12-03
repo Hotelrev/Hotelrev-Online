@@ -61,7 +61,7 @@ const Input = (props) => {
             filteredResults(value)?.map((result, index) => (
               <li
                 key={index}
-                className="text-base  text-slate-600 p-2 capitalize cursor-pointer border-b-2 hover:bg-slate-100"
+                className="text-base text-slate-600 p-2 capitalize cursor-pointer border-b-2 hover:bg-slate-100"
                 onClick={() => onTypeheadResultClick(result)}
               >
                 {result}
