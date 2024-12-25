@@ -47,7 +47,7 @@ api.interceptors.response.use(
         // Handle token refresh failure (e.g., redirect to login)
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/sign-in"; // Redirect to sign-in page
+        // window.location.href = "/sign-in"; // Redirect to sign-in page
       }
     }
 

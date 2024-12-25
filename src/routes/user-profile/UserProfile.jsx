@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from 'contexts/AuthContext';
 import api from 'services/axiosApi';
@@ -77,7 +79,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log(token)
+        // console.log(token)
         if (!token) {
           navigate('/login');
           return;
@@ -135,7 +137,21 @@ const UserProfile = () => {
   // const onTabsMenuButtonAction = () => {
   //   setIsTabsVisible(!isTabsVisible);
   // };
-  if (!userDetails) return <p>Loading...</p>;
+  if (!userDetails) {
+    return (
+      <div className="container mx-auto p-4 my-10 min-h-[530px]">
+        <Skeleton height={50} width={200} />
+        <div className="mt-4 space-y-4">
+          <Skeleton height={30} width="80%" />
+          <Skeleton height={30} width="70%" />
+          <Skeleton height={30} width="60%" />
+        </div>
+        <div className="mt-6">
+          <Skeleton height={200} />
+        </div>
+      </div>
+    );
+  }
 
   const handleEditClick = () => setIsEditMode(!isEditMode);
   const handleCancelClick = () => setIsEditMode(false);

@@ -86,8 +86,8 @@ const Login = () => {
           }
 
           // Decode the token and log it (or use it)
-          const decodedToken = jwtDecode(accessToken);
-          console.log('Decoded Token:', decodedToken);
+          // const decodedToken = jwtDecode(accessToken);
+          // console.log('Decoded Token:', decodedToken);
 
           // Trigger context auth check (if applicable) and navigate
           // context.triggerAuthCheck();
