@@ -1,200 +1,200 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { faLocationDot, faPerson, faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DateRange } from "react-date-range";
-import axios from "axios";
-import useOutsideClickHandler from "hooks/useOutsideClickHandler";
-import { formatDate } from "utils/date-helpers";
-import api from "services/axiosApi";
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLocationDot, faPerson, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { DateRange } from 'react-date-range';
+import useOutsideClickHandler from 'hooks/useOutsideClickHandler';
+import { formatDate } from 'utils/date-helpers';
+import api from 'services/axiosApi';
 
 const GlobalSearchBox = () => {
   const navigate = useNavigate();
 
-  // State for location input, autocomplete suggestions, and dropdown visibility
-  const [locationInput, setLocationInput] = useState("");
+  // States
+  const [locationInput, setLocationInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [selectedHotelId, setSelectedHotelId] = useState(""); // State to store hotel.id
-
-  // State for number of guests
-  const [numGuests, setNumGuests] = useState();
-
-  // State for date range picker
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [numGuests, setNumGuests] = useState('');
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [dateRange, setDateRange] = useState([
-    {
-      startDate: null,
-      endDate: null,
-      key: "selection",
-    },
-  ]);
+  const [dateRange, setDateRange] = useState([{ startDate: null, endDate: null, key: 'selection' }]);
 
-  // Ref for detecting clicks outside the date picker
+    // Ref for detecting clicks outside the date picker
   const datePickerRef = useRef();
   useOutsideClickHandler(datePickerRef, () => setIsDatePickerVisible(false));
 
-  // Fetch autocomplete suggestions from the API
+  // Fetch autocomplete suggestions
   const fetchSuggestions = async (query) => {
     try {
-      const response = await api.get(
-        `/hotels/autocomplete?query=${query}&language=en`
-      );
-      setSuggestions(response.data.hotels || []);
-      console.log(response.data.hotels)
+      const response = await api.get(`/hotels/autocomplete?query=${query}&language=en`);
+      const { hotels = [], regions = [] } = response.data;
+      setSuggestions([
+        ...hotels.map((h) => ({ id: h.id, name: h.name, type: 'hotel' })),
+        ...regions.map((r) => ({ id: r.id, name: r.name, type: 'region' })),
+      ]);
     } catch (error) {
-      console.error("Error fetching suggestions:", error);
+      console.error('Error fetching suggestions:', error);
     }
   };
 
-  // Handle location input changes and fetch suggestions
-  const handleLocationChange = (e) => {
-    const value = e.target.value;
-    setLocationInput(value);
-
-    if (value.trim()) {
-      fetchSuggestions(value);
-      setIsDropdownVisible(true);
-    } else {
-      setSuggestions([]);
-      setIsDropdownVisible(false);
-    }
-  };
-
-  // Handle selection of a suggestion from the dropdown
-  const handleSelectSuggestion = (hotel) => {
-    setLocationInput(hotel.name); // Show hotel name in the input
-    setSelectedHotelId(hotel.id); // Store the hotel.id
-    setSuggestions([]);
-    setIsDropdownVisible(false);
-  };
-
-  // Handle number of guests change
-  const handleNumGuestsChange = (e) => {
-    setNumGuests(e.target.value);
-  };
-
-  // Handle search button click
+  function formatDateToISO(dateString) {
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  // Handle search button
   const handleSearch = () => {
-    if (selectedHotelId && dateRange[0].startDate && dateRange[0].endDate) {
-      console.log(selectedHotelId, numGuests, dateRange[0].startDate, dateRange[0].endDate )
-      // Navigate to the search results page with input data
-      navigate("/hotels", {
+    if (selectedSuggestion && dateRange[0].startDate && dateRange[0].endDate && numGuests) {
+    console.log(selectedSuggestion.id, selectedSuggestion.type, formatDateToISO(formatDate(dateRange[0].endDate)), numGuests, formatDateToISO(formatDate(dateRange[0].startDate)))
+      navigate('/hotels', {
         state: {
-          location: selectedHotelId,
+          id: selectedSuggestion.id,
+          type: selectedSuggestion.type,
+          checkin: formatDateToISO(formatDate(dateRange[0].startDate)),
+          checkout: formatDateToISO(formatDate(dateRange[0].endDate)),
+          language: 'en',
           numGuests,
-          dateRange: {
-            startDate: formatDate(dateRange[0].startDate),
-            endDate: formatDate(dateRange[0].endDate),
-          },
+          page: 1,
+          limit: 10,
         },
       });
     } else {
-      alert("Please fill in all the fields.");
+      alert('Please fill in all the fields.');
     }
-  };
-
-  // Handle date picker visibility toggle
-  const toggleDatePicker = () => {
-    setIsDatePickerVisible((prev) => !prev);
   };
 
   return (
     <div className="flex flex-wrap flex-col lg:flex-row hero-content__search-box">
-      {/* Location Input with Autocomplete */}
-      <div className="relative w-full lg:w-auto lg:mb-0">
-        <div className="relative">
-          <input
-            type="text"
-            value={locationInput}
-            onChange={handleLocationChange}
-            placeholder="Enter location"
-            className="w-full pl-7 pr-3 py-2 border-2 border-brand-secondary text-black"
-          />
-          <FontAwesomeIcon
-            icon={faLocationDot}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]"
-          />
-        </div>
-        {isDropdownVisible && suggestions.length > 0 && (
-          <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-2 max-h-60 overflow-y-auto">
-            {suggestions.map((hotel) => (
-              <li
-                key={hotel.id}
-                onClick={() => handleSelectSuggestion(hotel)}
-                className="p-3 text-black hover:bg-[#074498] hover:text-white cursor-pointer"
-              >
-                {hotel.name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {/* Location Input */}
+      <LocationInput
+        value={locationInput}
+        onChange={setLocationInput}
+        suggestions={suggestions}
+        onFetchSuggestions={fetchSuggestions}
+        onSelectSuggestion={setSelectedSuggestion}
+        isDropdownVisible={isDropdownVisible}
+        setIsDropdownVisible={setIsDropdownVisible}
+      />
 
       {/* Date Range Picker */}
-      <div ref={datePickerRef} className="relative w-full lg:w-auto lg:mb-0">
-        <div className="flex">
-        <FontAwesomeIcon
-            icon={faCalendar}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]"
-            onClick={toggleDatePicker}
-          />
-          <input
-  type="text"
-  value={dateRange[0].startDate ? formatDate(dateRange[0].startDate) : ""}
-  onClick={toggleDatePicker}
-  readOnly
-  placeholder="Check-in"
-  className="w-1/2 pl-7 pr-3 py-2 border-2 border-brand-secondary cursor-pointer text-black"
-/>
-<input
-  type="text"
-  value={dateRange[0].endDate ? formatDate(dateRange[0].endDate) : ""}
-  onClick={toggleDatePicker}
-  readOnly
-  placeholder="Check-out"
-  className="w-1/2 pl-7 pr-3 py-2 border-2 border-brand-secondary cursor-pointer text-black"
-/>
+      <DateRangePicker
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+        isVisible={isDatePickerVisible}
+        toggleVisibility={setIsDatePickerVisible}
+        ref={datePickerRef}
+      />
 
-        </div>
-        {isDatePickerVisible && (
-          <DateRange
-            editableDateInputs
-            onChange={(range) => setDateRange([range.selection])}
-            moveRangeOnFirstSelection={false}
-            ranges={dateRange}
-            minDate={new Date()}
-            direction="horizontal"
-            className="absolute z-20 mt-2 shadow-lg bg-white border"
-          />
-        )}
-      </div>
-
-      {/* Number of Guests Input */}
-      <div className="relative w-full lg:w-auto mb-0">
-        <input
-          type="number"
-          value={numGuests}
-          onChange={handleNumGuestsChange}
-          // min="1"
-          placeholder="No. of guests"
-          className="w-full pl-7 pr-3 py-2 border-2 border-brand-secondary text-black"
-        />
-        <FontAwesomeIcon
-          icon={faPerson}
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]"
-        />
-      </div>
+      {/* Guests Input */}
+      <GuestInput value={numGuests} onChange={setNumGuests} />
 
       {/* Search Button */}
-      <button
-        className="w-full md:w-auto sb__button--secondary bg-brand-secondary hover:bg-yellow-600 px-4 py-2 text-white"
-        onClick={handleSearch}
-      >
-        SEARCH
-      </button>
+      <SearchButton onSearch={handleSearch} />
     </div>
   );
 };
 
 export default GlobalSearchBox;
+
+// Location Input Component
+const LocationInput = ({ value, onChange, suggestions, onFetchSuggestions, onSelectSuggestion, isDropdownVisible, setIsDropdownVisible }) => (
+  <div className="relative w-full lg:w-auto lg:mb-0">
+    <input
+      type="text"
+      value={value}
+      onChange={(e) => {
+        onChange(e.target.value);
+        if (e.target.value.trim()) {
+          onFetchSuggestions(e.target.value);
+          setIsDropdownVisible(true);
+        } else {
+          setIsDropdownVisible(false);
+        }
+      }}
+      placeholder="Enter location"
+      className="w-full pl-7 pr-3 py-2 border-2 border-brand-secondary text-black"
+    />
+    <FontAwesomeIcon icon={faLocationDot} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]" />
+    {isDropdownVisible && suggestions.length > 0 && (
+      <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-2 max-h-60 overflow-y-auto">
+        {suggestions.map((s) => (
+          <li
+            key={s.id}
+            onClick={() => {
+              onChange(s.name); // Update the input field with the clicked suggestion
+              onSelectSuggestion(s); // Set the selected suggestion
+              setIsDropdownVisible(false); // Hide the dropdown
+            }}
+            className="p-3 text-black hover:bg-[#074498] hover:text-white cursor-pointer"
+          >
+            {s.name} <span className="text-sm text-gray-500">({s.type})</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
+
+
+// Date Range Picker Component
+const DateRangePicker = React.forwardRef(({ dateRange, setDateRange, isVisible, toggleVisibility }, ref) => (
+  <div ref={ref} className="relative w-full lg:w-auto lg:mb-0">
+    <div className="flex">
+      <FontAwesomeIcon
+        icon={faCalendar}
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]"
+        onClick={() => toggleVisibility((prev) => !prev)}
+      />
+      <input
+        type="text"
+        value={dateRange[0].startDate ? formatDate(dateRange[0].startDate) : ''}
+        onClick={() => toggleVisibility((prev) => !prev)}
+        readOnly
+        placeholder="Check-in"
+        className="w-1/2 pl-7 pr-3 py-2 border-2 border-brand-secondary cursor-pointer text-black"
+      />
+      <input
+        type="text"
+        value={dateRange[0].endDate ? formatDate(dateRange[0].endDate) : ''}
+        onClick={() => toggleVisibility((prev) => !prev)}
+        readOnly
+        placeholder="Check-out"
+        className="w-1/2 pl-7 pr-3 py-2 border-2 border-brand-secondary cursor-pointer text-black"
+      />
+    </div>
+    {isVisible && (
+      <DateRange
+        editableDateInputs
+        onChange={(range) => setDateRange([range.selection])}
+        moveRangeOnFirstSelection={false}
+        ranges={dateRange}
+        minDate={new Date()}
+        direction="horizontal"
+        className="absolute z-20 mt-2 shadow-lg bg-white border"
+      />
+    )}
+  </div>
+));
+
+// Guests Input Component
+const GuestInput = ({ value, onChange }) => (
+  <div className="relative w-full lg:w-auto mb-0">
+    <input
+      type="number"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="No. of guests"
+      className="w-full pl-7 pr-3 py-2 border-2 border-brand-secondary text-black"
+    />
+    <FontAwesomeIcon icon={faPerson} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#074498]" />
+  </div>
+);
+
+// Search Button Component
+const SearchButton = ({ onSearch }) => (
+  <button
+    className="w-full md:w-auto sb__button--secondary bg-brand-secondary hover:bg-yellow-600 px-4 py-2 text-white"
+    onClick={onSearch}
+  >
+    SEARCH
+  </button>
+);

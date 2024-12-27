@@ -1,378 +1,155 @@
 import React, { useState, useEffect } from 'react';
 import GlobalSearchBox from 'components/global-search-box/GlobalSearchbox';
-import ResultsContainer from 'components/results-container/ResultsContainer';
-import { networkAdapter } from 'services/NetworkAdapter';
-import { apiManager } from 'services/ApiManager';
-import isEmpty from 'utils/helpers';
-import { MAX_GUESTS_INPUT_VALUE } from 'utils/constants';
-import { formatDate } from 'utils/date-helpers';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { parse } from 'date-fns';
-import PaginationController from 'components/ux/pagination-controller/PaginationController';
-import { SORTING_FILTER_LABELS } from 'utils/constants';
+import api from 'services/axiosApi';
+import { useLocation } from 'react-router-dom';
 
-/**
- * Represents the hotels search component.
- * @component
- * @returns {JSX.Element} The hotels search component.
- */
 const HotelsSearch = () => {
-  // State for managing date picker visibility
   const [isDatePickerVisible, setisDatePickerVisible] = useState(false);
-
-  // State for managing location input value
-  const [locationInputValue, setLocationInputValue] = useState('pune');
-
-  // State for managing number of guests input value
+  const [locationInputValue, setLocationInputValue] = useState('');
   const [numGuestsInputValue, setNumGuestsInputValue] = useState('');
-
-  // State for storing available cities
   const [availableCities, setAvailableCities] = useState([]);
-
-  //State for longitude and latitude
-  const [longitude, setLongitude] = useState(null);
-  const [latitude, setLatitude] = useState(null);
-
-  // State for managing current results page
-  const [currentResultsPage, setCurrentResultsPage] = useState(1);
-
-  // State for managing filters data
-  const [filtersData, setFiltersData] = useState({
-    isLoading: true,
-    data: [],
-    errors: [],
-  });
-
-  // State for storing hotels search results
-  const [hotelsResults, setHotelsResults] = useState({
-    isLoading: true,
-    data: [],
-    errors: [],
-  });
-
-  const [dateRange, setDateRange] = useState([
-    {
-      startDate: null,
-      endDate: null,
-      key: 'selection',
-    },
-  ]);
-
-  // State for managing sorting filter value
-  const [sortByFilterValue, setSortByFilterValue] = useState({
-    value: 'default',
-    label: 'Sort by',
-  });
-
-  // State for managing selected filters
-  const [selectedFiltersState, setSelectedFiltersState] = useState({});
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
+  const [hotelsData, setHotelsData] = useState([]);
+  const [selectedHotel, setSelectedHotel] = useState(null);
+  // const [pagination, setPagination] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const location = useLocation();
 
-  // Options for sorting filter
-  const sortingFilterOptions = [
-    { value: 'default', label: 'Sort by' },
-    { value: 'priceLowToHigh', label: SORTING_FILTER_LABELS.PRICE_LOW_TO_HIGH },
-    { value: 'priceHighToLow', label: SORTING_FILTER_LABELS.PRICE_HIGH_TO_LOW },
-  ];
+  const fetchData = async (type, id, checkin, checkout, numGuests, language, page, limit) => {
+    setIsLoading(true);
+    setError(null);
 
-  /**
-   * Handles updates to sorting filter.
-   * @param {Object} selectedOption - The selected option.
-   */
-  const onSortingFilterChange = (selectedOption) => {
-    setSortByFilterValue(selectedOption);
-  };
-
-  /**
-   * Handles updates to filters.
-   * @param {Object} updatedFilter - The filter object that is updated.
-   */
-  const onFiltersUpdate = (updatedFilter) => {
-    setSelectedFiltersState(
-      selectedFiltersState?.map((filterGroup) => {
-        if (filterGroup.filterId === updatedFilter.filterId) {
-          return {
-            ...filterGroup,
-            filters: filterGroup.filters?.map((filter) => {
-              if (filter.id === updatedFilter.id) {
-                return {
-                  ...filter,
-                  isSelected: !filter.isSelected,
-                };
-              }
-              return filter;
-            }),
-          };
-        }
-        return filterGroup;
-      })
-    );
-  };
-
-  const onDateChangeHandler = (ranges) => {
-    setDateRange([ranges.selection]);
-  };
-
-  const onSearchButtonAction = () => {
-    console.log('Search button clicked');
-    const activeFilters = getActiveFilters();
-    const numGuest = Number(numGuestsInputValue);
-    const checkInDate = formatDate(dateRange.startDate) ?? '';
-    const checkOutDate = formatDate(dateRange.endDate) ?? '';
-    setSearchParams({
-      city: locationInputValue,
-      numGuests: numGuestsInputValue,
-    });
-    fetchHotels({
-      city: locationInputValue,
-      ...activeFilters,
-      guests: numGuest,
-      checkInDate,
-      checkOutDate,
-    });
-  };
-
-  const getActiveFilters = () => {
-    const filters = {};
-    selectedFiltersState.forEach((category) => {
-      const selectedValues = category.filters
-        .filter((filter) => filter.isSelected)
-        ?.map((filter) => filter.value);
-
-      if (selectedValues.length > 0) {
-        filters[category.filterId] = selectedValues;
-      }
-    });
-    if (!isEmpty(filters)) {
-      return filters;
-    }
-    return null;
-  };
-
-  // Toggles the visibility of the date picker
-  const onDatePickerIconClick = () => {
-    setisDatePickerVisible(!isDatePickerVisible);
-  };
-
-  /**
-   * Handles changes in the location input.
-   * Refreshes hotel data if the location is valid.
-   * @param {string} value - The new location value.
-   */
-  /**
-   * Handles changes in the location input.
-   * Fetches location suggestions based on the input value.
-   * @param {string} value - The new location value.
-   */
-  const onLocationChangeInput = (value) => {
-    setLocationInputValue(value.toLowerCase());
-
-    if (value.trim()) {
-      fetchAvailableCities(value);
-    } else {
-      setAvailableCities([]); // Clear suggestions if input is empty
-    }
-  };
-
-  /**
-   * Handles changes in the number of guests input.
-   * @param {String} numGuests - Number of guests.
-   */
-  const onNumGuestsInputChange = (numGuests) => {
-    if (numGuests < MAX_GUESTS_INPUT_VALUE && numGuests > 0) {
-      setNumGuestsInputValue(numGuests);
-    }
-  };
-
-  const onClearFiltersAction = () => {
-    const hasActiveFilters = selectedFiltersState.some((filterGroup) =>
-      filterGroup.filters.some((filter) => filter.isSelected)
-    );
-
-    if (hasActiveFilters) {
-      setSelectedFiltersState(
-        selectedFiltersState?.map((filterGroup) => ({
-          ...filterGroup,
-          filters: filterGroup.filters?.map((filter) => ({
-            ...filter,
-            isSelected: false,
-          })),
-        }))
-      );
-    }
-  };
-
-  /**
-   * Fetches hotels based on the provided filters.
-   * @param {Object} filters - The filters to apply.
-   * @returns {Promise<void>}
-   * @async
-   */
-  const fetchHotels = async (filters) => {
-    console.log(numGuestsInputValue, locationInputValue);
-    setHotelsResults({
-      isLoading: true,
-      data: [],
-      errors: [],
-    });
-
-    const requestData = {
-      checkin: filters.checkInDate, // Assuming the date is in the correct format (YYYY-MM-DD)
-      checkout: filters.checkOutDate,
-      residency: 'gb', // You might want to make this dynamic
-      language: 'en', // You might want to make this dynamic
-      guests: [
-        {
-          adults: numGuestsInputValue,
-          children: [], // Add logic if you need to handle children
-        },
-      ],
-      longitude: 13.38886,
-      latitude: 52.517036,
-      radius: filters.radius || 100, // Default radius to 100 if not provided
-      currency: 'EUR', // You might want to make this dynamic
-    };
-
-    const hotelsResultsResponse = await apiManager.post(
-      '/search/serp/geo/',
-      requestData
-    );
-    if (hotelsResultsResponse) {
-      setHotelsResults({
-        isLoading: false,
-        data: hotelsResultsResponse.data.hotels,
-        errors: hotelsResultsResponse.errors,
-        metadata: hotelsResultsResponse.metadata,
-        pagination: hotelsResultsResponse.paging,
-      });
-    }
-  };
-
-  const getVerticalFiltersData = async () => {
-    const filtersDataResponse = await networkAdapter.get(
-      'api/hotels/verticalFilters'
-    );
-    if (filtersDataResponse) {
-      setFiltersData({
-        isLoading: false,
-        data: filtersDataResponse.data.elements,
-        errors: filtersDataResponse.errors,
-      });
-    }
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentResultsPage(page);
-  };
-
-  const handlePreviousPageChange = () => {
-    setCurrentResultsPage((prev) => {
-      if (prev <= 1) return prev;
-      return prev - 1;
-    });
-  };
-
-  const handleNextPageChange = () => {
-    setCurrentResultsPage((prev) => {
-      if (prev >= hotelsResults.pagination.totalPages) return prev;
-      return prev + 1;
-    });
-  };
-
-  // Fetches the list of available cities
-  const fetchAvailableCities = async (query) => {
     try {
-      const requestData = {
-        query,
-        language: 'en',
+      let endpoint = '';
+      let requestBody = {
+        id: id, // Assuming `id` is the hotel ID
+        checkin: checkin,
+        checkout: checkout,
+        language: language,
+        guests: [
+          {
+              adults: 2,
+              children: [],
+          }
+        ],
       };
-      // "Mirage: Your app tried to POST 'https://api.worldota.net/api/b2b/v3/search/multicomplete/', but there was no route defined to handle this request. Define a route for this endpoint in your routes() config. Did you forget to define a namespace? The existing namespace is undefined"
+      console.log('Request Type:', type);
+      console.log('Request Body:', requestBody);
 
-      const availableCitiesResponse = await apiManager.post(
-        '/api/b2b/v3/search/multicomplete/',
-        requestData
-      );
-      console.log(availableCitiesResponse);
-
-      if (availableCitiesResponse) {
-        setAvailableCities(availableCitiesResponse.data.regions);
-      } else {
-        setAvailableCities([]);
+      if (type === 'hotel') {
+        endpoint = `/hotels/page`;
+        requestBody = {
+          ...requestBody
+        };
+      } else if (type === 'region') {
+        endpoint = `/hotels/search`;
+        requestBody = {
+          ...requestBody,
+          type: type,
+          id: id, // Assuming `id` is the region ID
+          page,
+          limit: 10,
+        };
       }
-    } catch (error) {
-      console.error('Error fetching available cities:', error);
-      setAvailableCities([]);
+
+      console.log('Endpoint:', endpoint);
+      const response = await api.post(endpoint, requestBody);
+      const totalPages = response.data.pagination?.totalPages || 1;
+      console.log('Type:', type);
+      console.log('API Response:', response);
+
+
+      if (type === 'hotel') {
+        console.log('Hotel Data:', response.data); // Log the response for debugging
+        setSelectedHotel(response.data || []);
+      } else if (type === 'region') {
+        console.log(response.data); // Log the response for debugging
+        setHotelsData(response.data.data || []);
+        setTotalPages(totalPages);
+        setCurrentPage(page);
+        // setPagination(response.data.pagination);
+      }
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch data. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      const { type, id, checkin, checkout, numGuests, language, limit } = location.state;
+      fetchData(type, id, checkin, checkout, numGuests, language, newPage, limit);
     }
   };
 
-  // Fetch available cities and initial data on component mount
-  useEffect(() => {
-    fetchAvailableCities();
-    getVerticalFiltersData();
-  }, []);
 
-  // And update location input value if city is present in the URL
-  // Also update number of guests input value if numGuests is present in the URL
-  useEffect(() => {
-    if (searchParams.get('city')) {
-      setLocationInputValue(searchParams.get('city'));
-    }
-
-    if (searchParams.get('numGuests')) {
-      setNumGuestsInputValue(searchParams.get('numGuests'));
-    }
-  }, [searchParams]);
-
-  // Update selected filters state when filters data changes
-  useEffect(() => {
-    setSelectedFiltersState(
-      filtersData.data?.map((filterGroup) => ({
-        ...filterGroup,
-        filters: filterGroup.filters?.map((filter) => ({
-          ...filter,
-          isSelected: false,
-        })),
-      }))
-    );
-  }, [filtersData]);
-
-  useEffect(() => {
-    if (selectedFiltersState.length > 0) {
-      const activeFilters = getActiveFilters();
-      if (activeFilters) {
-        activeFilters.city = locationInputValue.toLowerCase();
-        fetchHotels(activeFilters);
-      } else {
-        fetchHotels({
-          city: locationInputValue,
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFiltersState, currentResultsPage, sortByFilterValue]);
-
-  // Fetch hotels when location input value changes
   useEffect(() => {
     if (location.state) {
-      const { city, numGuest, checkInDate, checkOutDate } = location.state;
-      if (numGuest) {
-        setNumGuestsInputValue(numGuest.toString());
-      }
-      setLocationInputValue(city);
-      if (checkInDate && checkOutDate) {
-        setDateRange([
-          {
-            startDate: parse(checkInDate, 'dd/MM/yyyy', new Date()),
-            endDate: parse(checkOutDate, 'dd/MM/yyyy', new Date()),
-            key: 'selection',
-          },
-        ]);
-      }
+      console.log(location.state)
+      const { type, id, checkin, checkout, numGuests, language, page, limit } = location.state;
+      // fetchData(type, id, checkin, checkout, numGuests, language, page, limit);
+      fetchData(type, id, checkin, checkout, Number(numGuests), language, page, limit);
+      // fetchData('hotel', 'good_night_3', '2024-12-20', '2024-12-26', 2, 'en', 1, 10);
     }
-  }, [location]);
+  }, [location.state]);
+
+  const renderRegionHotels = () => {
+    if (!hotelsData.length) return <p>No hotels found in this region.</p>;
+
+    return (
+      <div className="hotels-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {hotelsData.map((hotel) => (
+          <div key={hotel.id} className="hotel-card border p-4 rounded shadow">
+            <h3 className="text-lg font-semibold">Hotel Name: {hotel.hid}</h3>
+            <p>Hotel ID: {hotel.id}</p>
+            <h4 className="font-semibold mt-2">Rates:</h4>
+            {hotel.rates.map((rate, idx) => (
+              <div key={idx} className="rate-info pl-4 border-l mt-2">
+                <p>Daily Prices: {rate.daily_prices?.join(', ') || 'N/A'}</p>
+                <p>Meal: {rate.meal || 'N/A'}</p>
+                <p>Amount: {rate.payment_options?.payment_types[0]?.amount || 'N/A'}</p>
+                <p>
+                  Free Cancellation Before:{' '}
+                  {rate.payment_options?.payment_types[0]?.cancellation_penalties?.free_cancellation_before || 'N/A'}
+                </p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderHotelDetails = () => {
+    if (!selectedHotel) return <p>No hotel details available.</p>;
+    console.log(selectedHotel)
+
+    const hotel = selectedHotel.hotels?.[0]; // Assuming response.data.hotels is an array with one hotel for 'hotel' type
+    if (!hotel) return <p>No hotel data found.</p>;
+
+    return (
+      <div className="hotel-detail border p-4 rounded shadow">
+        <h2 className="text-lg font-bold">Hotel Name: {hotel.hid}</h2>
+        <p>Hotel ID: {hotel.id}</p>
+        <h3 className="font-semibold mt-2">Rates:</h3>
+        {hotel.rates.map((rate, idx) => (
+          <div key={idx} className="rate-info pl-4 border-l mt-2">
+            <p>Daily Prices: {rate.daily_prices?.join(', ') || 'N/A'}</p>
+            <p>Meal: {rate.meal || 'N/A'}</p>
+            <p>Amount: {rate.payment_options?.payment_types[0]?.amount || 'N/A'}</p>
+            <p>
+              Free Cancellation Before:{' '}
+              {rate.payment_options?.payment_types[0]?.cancellation_penalties?.free_cancellation_before || 'N/A'}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
 
   return (
     <div className="hotels">
@@ -383,36 +160,72 @@ const HotelsSearch = () => {
           numGuestsInputValue={numGuestsInputValue}
           isDatePickerVisible={isDatePickerVisible}
           setisDatePickerVisible={setisDatePickerVisible}
-          onLocationChangeInput={onLocationChangeInput}
-          onNumGuestsInputChange={onNumGuestsInputChange}
-          dateRange={dateRange}
-          onDateChangeHandler={onDateChangeHandler}
-          onDatePickerIconClick={onDatePickerIconClick}
-          onSearchButtonAction={onSearchButtonAction}
         />
       </div>
-      <div className="my-4"></div>
-      <div className="w-[180px]"></div>
-      <ResultsContainer
-        hotelsResults={hotelsResults}
-        enableFilters={true}
-        filtersData={filtersData}
-        onFiltersUpdate={onFiltersUpdate}
-        onClearFiltersAction={onClearFiltersAction}
-        selectedFiltersState={selectedFiltersState}
-        sortByFilterValue={sortByFilterValue}
-        onSortingFilterChange={onSortingFilterChange}
-        sortingFilterOptions={sortingFilterOptions}
-      />
-      {hotelsResults?.pagination?.totalPages > 1 && (
-        <div className="my-4">
-          <PaginationController
-            currentPage={currentResultsPage}
-            totalPages={hotelsResults.pagination?.totalPages}
-            handlePageChange={handlePageChange}
-            handlePreviousPageChange={handlePreviousPageChange}
-            handleNextPageChange={handleNextPageChange}
-          />
+
+      <div className="my-4" />
+
+      {isLoading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <div className="results">
+  {location.state?.type === 'hotel'
+    ? renderHotelDetails()
+    : renderRegionHotels()}
+</div>
+
+      {/* {!isLoading && !error && (
+        <div className="results">
+          {location.state?.type === 'hotel' ? (
+            <div className="hotel-detail border p-4 rounded shadow">
+              <h2 className="text-lg font-bold">{selectedHotel.hid}</h2>
+              <p>{selectedHotel.id}</p>
+              <h3 className="font-semibold">Rates:</h3>
+                {selectedHotel.rates.map((rate, idx) => (
+                  <div key={idx} className="pl-4 border-l mt-2">
+                    <p>Book Hash: {rate.book_hash}</p>
+                    <p>Meal: {rate.meal}</p>
+                    <p>Daily Prices: {rate.daily_prices.join(", ")}</p>
+                    <p>Amount: {rate.payment_options.payment_types[0].amount}</p>
+                    <p>
+                      Free Cancellation Before: {
+                        rate.payment_options.payment_types[0].cancellation_penalties
+                          .free_cancellation_before
+                      }
+                    </p>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            renderRegionHotels()
+          )}
+        </div>
+      )} */}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="pagination mt-4 flex justify-center items-center gap-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 bg-gray-300 rounded ${
+              currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-400'
+            }`}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 bg-gray-300 rounded ${
+              currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-400'
+            }`}
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
